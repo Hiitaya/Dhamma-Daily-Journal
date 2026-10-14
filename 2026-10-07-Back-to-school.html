@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ทำบทศึกษา : กรรมของตน (2026-10-07) - Minimal Infographic</title>
-  <!-- Google Fonts: Sarabun & Mali -->
+  <title>ทำบทศึกษา : กรรมของตน (Back to School) - Standalone React Infographic</title>
+
+  <!-- Google Fonts: Mali & Sarabun -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -32,6 +35,7 @@
       }
     }
   </script>
+
   <style>
     body {
       background-color: #EFE7DC;
@@ -57,12 +61,6 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .comic-box {
-      border: 3.5px solid #3A2D2C;
-      border-radius: 1.5rem;
-      background-color: #FFFFFF;
-      box-shadow: 4px 4px 0px 0px #3A2D2C;
-    }
     .hide-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
@@ -73,357 +71,484 @@
       background-color: #D9C5B2;
       border-radius: 10px;
     }
+    @keyframes pulseBreathing {
+      0%, 100% { transform: scale(1); opacity: 0.85; }
+      50% { transform: scale(1.18); opacity: 1; }
+    }
+    .animate-breathing {
+      animation: pulseBreathing 4s ease-in-out infinite;
+    }
   </style>
+
+  <!-- React 18 & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel for parsing JSX directly in browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Lucide Icons Standalone -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-2 sm:p-6 paper-texture">
+  
+  <div id="root" class="w-full flex justify-center"></div>
 
-  <!-- Top Controller Bar -->
-  <div class="max-w-[1024px] w-full flex flex-wrap items-center justify-between mb-4 px-2 gap-3">
-    <div class="flex items-center gap-2">
-      <!-- ปุ่มกลับหน้าสารบัญหลัก -->
-      <a href="index.html" class="px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition shadow-sm flex items-center gap-1 comic-title">
-        ← สารบัญหลัก
-      </a>
-      <span class="inline-block w-4 h-4 rounded-full bg-peachDark"></span>
-      <span class="comic-title font-bold text-woodBrown text-base sm:text-lg">
-        บันทึกธรรมะหน้ากระดาน 7 ต.ค. 2569
-      </span>
-    </div>
+  <!-- React Application Script -->
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
 
-    <!-- Board Selector Buttons -->
-    <div class="flex flex-wrap items-center gap-2 comic-title w-full sm:w-auto">
-      <button onclick="switchBoard(0)" id="btn-board-0" class="flex-1 sm:flex-none px-4 py-2 rounded-full border-[2.5px] border-woodBrown bg-peachSoft text-woodBrown font-bold text-xs sm:text-sm shadow-sm transition">
-        แผ่นที่ 1: ป.ตรี
-      </button>
-      <button onclick="switchBoard(1)" id="btn-board-1" class="flex-1 sm:flex-none px-4 py-2 rounded-full border-[2.5px] border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition">
-        แผ่นที่ 2: ป.โท
-      </button>
-      <button onclick="switchBoard(2)" id="btn-board-2" class="flex-1 sm:flex-none px-4 py-2 rounded-full border-[2.5px] border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition">
-        แผ่นที่ 3: ป.เอก
-      </button>
-    </div>
-  </div>
-
-  <!-- Main Artboard (Infographic Canvas) -->
-  <main class="w-full max-w-[1024px] lg:aspect-[4/3] bg-cream rounded-[2rem] border-[4px] border-woodBrown shadow-[8px_8px_0px_0px_#3A2D2C] relative flex flex-col p-4 sm:p-7 overflow-y-auto hide-scrollbar" style="max-height: 85vh;">
-
-    <!-- ==================== BOARD 1: ป.ตรี ==================== -->
-    <div id="board-0" class="flex flex-col flex-1">
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 mb-4 border-b-[3px] border-dashed border-lightBrown/40 gap-2 shrink-0">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-dustyBlue text-white border-2 border-woodBrown text-xs sm:text-sm comic-title font-extrabold mb-1">
-            <span>🎓 ป.ตรี • เรียนรู้กายตน</span>
-          </div>
-          <h1 class="comic-title text-xl sm:text-3xl font-extrabold text-woodBrown tracking-tight">
-            ทำบทศึกษา : กรรมของตน
-          </h1>
-        </div>
-        <div class="text-xs sm:text-sm text-lightBrown font-bold bg-warmBeige px-3 py-1.5 rounded-xl border-2 border-woodBrown">
-          2026-10-07 เรียนกระดาน 1
-        </div>
-      </header>
-
-      <!-- 3 Columns Layout (เหมือนภาพ 1) -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
-        <!-- Col 1: กาย คือใคร? -->
-        <div class="comic-box p-4 flex flex-col justify-between">
-          <div>
-            <h3 class="comic-title text-base sm:text-lg font-bold text-peachDark text-center mb-1">
-              กาย คือใคร...?
-            </h3>
-            <p class="text-xs text-center font-bold text-lightBrown mb-3">
-              อดีตกรรมเก่า + ปัจจุบันพระอภิธัม
-            </p>
-            <div class="flex justify-center my-3">
-              <!-- การ์ตูนนั่งสมาธิและธาตุทั้ง 4 -->
-              <svg width="120" height="90" viewBox="0 0 120 90">
-                <circle cx="60" cy="30" r="14" fill="#FFDFC7" class="clean-line" />
-                <path d="M42 68 C45 48 75 48 78 68 Z" fill="#F3ECE1" class="clean-line" />
-                <ellipse cx="60" cy="72" rx="30" ry="8" fill="#D9C5B2" class="clean-line" />
-                <!-- 4 Elements icons -->
-                <circle cx="20" cy="25" r="9" fill="#859A72" class="clean-line-thin"/>
-                <text x="16" y="29" font-size="9" font-weight="bold" fill="#FFF">ดิน</text>
-                <circle cx="20" cy="50" r="9" fill="#6A879E" class="clean-line-thin"/>
-                <text x="16" y="54" font-size="9" font-weight="bold" fill="#FFF">น้ำ</text>
-                <circle cx="100" cy="25" r="9" fill="#FAF6F0" class="clean-line-thin"/>
-                <text x="96" y="29" font-size="9" font-weight="bold" fill="#3A2D2C">ลม</text>
-                <circle cx="100" cy="50" r="9" fill="#D85C3A" class="clean-line-thin"/>
-                <text x="97" y="54" font-size="9" font-weight="bold" fill="#FFF">ไฟ</text>
-              </svg>
-            </div>
-            <div class="bg-warmBeige p-2.5 rounded-xl border border-lightBrown/30 text-center mb-2">
-              <p class="font-extrabold text-xs text-woodBrown comic-title">ธาตุไม่รู้ • ลมหายใจ = ธาตุเดินทาง</p>
-            </div>
-          </div>
-          <div class="bg-cream p-2.5 rounded-xl border border-lightBrown/30 text-center">
-            <p class="font-bold text-xs sm:text-sm text-woodBrown leading-snug">
-              กายไม่มีฉลาด ไม่มีโง่<br>
-              <span class="text-peachDark font-extrabold">เป็นก้อนธาตุที่เดินทางตามธรรมชาติ</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Col 2: กาย = ธาตุสุญญตา -->
-        <div class="comic-box p-4 flex flex-col justify-between">
-          <div>
-            <h3 class="comic-title text-base sm:text-lg font-bold text-sageGreen text-center mb-1">
-              กาย = ธาตุสุญญตา
-            </h3>
-            <p class="text-xs text-center font-bold text-lightBrown mb-3">
-              (ความว่าง)
-            </p>
-            <div class="flex justify-center my-3">
-              <!-- ตัวตนเส้นประโปร่งใสคืนสู่ความว่าง -->
-              <svg width="120" height="90" viewBox="0 0 120 90">
-                <circle cx="60" cy="30" r="14" fill="none" stroke="#859A72" stroke-width="2.5" stroke-dasharray="3,3" />
-                <path d="M42 68 C45 48 75 48 78 68 Z" fill="none" stroke="#859A72" stroke-width="2.5" stroke-dasharray="3,3" />
-                <text x="60" y="20" font-size="8" text-anchor="middle" font-weight="bold" fill="#859A72">เกิดบนความว่าง</text>
-                <text x="60" y="52" font-size="8" text-anchor="middle" font-weight="bold" fill="#859A72">เดินทาง/ตั้งอยู่</text>
-                <text x="60" y="82" font-size="8" text-anchor="middle" font-weight="bold" fill="#D85C3A">ปลายทาง คืนสู่ความว่าง</text>
-              </svg>
-            </div>
-          </div>
-          <div class="bg-cream p-2.5 rounded-xl border border-lightBrown/30 text-center">
-            <p class="font-bold text-xs sm:text-sm text-woodBrown leading-snug">
-              ธาตุสุญญตา ไม่เคยตาย<br>
-              <span class="text-sageGreen font-extrabold">เขาเป็นอมตะธาตุ</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Col 3: รูปธัมเป็นมายา -->
-        <div class="comic-box p-4 flex flex-col justify-between">
-          <div>
-            <h3 class="comic-title text-base sm:text-lg font-bold text-dustyBlue text-center mb-1">
-              รูปธัม เป็นมายา
-            </h3>
-            <p class="text-xs text-center font-bold text-lightBrown mb-3">
-              ธรรม vs กรรม
-            </p>
-            <div class="flex justify-center my-3">
-              <svg width="120" height="90" viewBox="0 0 120 90">
-                <circle cx="60" cy="28" r="12" fill="#FFDFC7" class="clean-line-thin" />
-                <path d="M46 62 C48 46 72 46 74 62 Z" fill="#E8F1F5" class="clean-line-thin" />
-                <!-- เงาธรรม (ขาว/สว่าง) -->
-                <circle cx="35" cy="30" r="9" fill="#FAF6F0" opacity="0.8" stroke="#3A2D2C" stroke-width="1.5"/>
-                <text x="26" y="16" font-size="8" font-weight="bold" fill="#3A2D2C">ธรรม</text>
-                <!-- เงากรรม (เข้ม/เกาะหลัง) -->
-                <circle cx="85" cy="32" r="9" fill="#3A2D2C" opacity="0.8"/>
-                <text x="80" y="18" font-size="8" font-weight="bold" fill="#FFF">กรรม</text>
-              </svg>
-            </div>
-          </div>
-          <div class="bg-cream p-2.5 rounded-xl border border-lightBrown/30 text-center">
-            <p class="font-bold text-xs sm:text-sm text-woodBrown leading-snug">
-              มายา มีอยู่โดยเหตุ (กรรม)<br>
-              <span class="text-dustyBlue font-extrabold">และ ผล (เดินทาง)</span>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== BOARD 2: ป.โท ==================== -->
-    <div id="board-1" class="hidden flex-col flex-1">
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 mb-4 border-b-[3px] border-dashed border-lightBrown/40 gap-2 shrink-0">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-peachDark text-white border-2 border-woodBrown text-xs sm:text-sm comic-title font-extrabold mb-1">
-            <span>⏳ ป.โท • เจริญสติ 24 ชม.</span>
-          </div>
-          <h1 class="comic-title text-xl sm:text-3xl font-extrabold text-woodBrown tracking-tight">
-            ฝึกสติ ที่ระลึกถูกมาก.. 24 ชม.
-          </h1>
-        </div>
-        <div class="text-xs sm:text-sm text-lightBrown font-bold bg-warmBeige px-3 py-1.5 rounded-xl border-2 border-woodBrown">
-          2026-10-07 เรียนกระดาน 2
-        </div>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-        <!-- ซ้าย: การตามเห็น 3 สเต็ป -->
-        <div class="comic-box p-4 flex flex-col justify-around gap-2">
-          <div class="flex items-center gap-3 bg-cream p-2.5 rounded-xl border border-lightBrown/20">
-            <span class="text-2xl">🌱</span>
-            <div>
-              <p class="font-bold text-sm text-woodBrown comic-title">• เห็นร่างกายคือความว่าง</p>
-              <p class="text-xs text-lightBrown font-semibold">เกิด-แก่-เจ็บ-ตาย ตลอดเวลา</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3 bg-cream p-2.5 rounded-xl border border-lightBrown/20">
-            <span class="text-2xl">💨</span>
-            <div>
-              <p class="font-bold text-sm text-woodBrown comic-title">• เห็นลมหายใจ เข้า(-ออก)</p>
-              <p class="text-xs text-lightBrown font-semibold">เข้าก็เกิด-แก่-ดับ ออกก็เกิด-แก่-ดับ</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3 bg-cream p-2.5 rounded-xl border border-lightBrown/20">
-            <span class="text-2xl">🔍</span>
-            <div>
-              <p class="font-bold text-sm text-woodBrown comic-title">• เห็นผม, ขน, เล็บ... ร่างกายในปัจจุบัน</p>
-              <p class="text-xs text-lightBrown font-semibold">เซลล์เกิด-แก่-เจ็บ-ตาย แม้ใน 1 นาที</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- ขวา: แผนผังไทม์ไลน์เวลา -->
-        <div class="comic-box p-4 flex flex-col justify-between">
-          <p class="comic-title text-sm sm:text-base font-extrabold text-center text-peachDark mb-2">
-            ⏱️ เส้นเวลาปัจจุบันขณะ
-          </p>
-          <div class="bg-warmBeige/60 p-3 rounded-2xl border border-lightBrown/30 text-center">
-            <div class="flex items-center justify-center gap-2 font-extrabold text-sm sm:text-base text-woodBrown my-2">
-              <span class="px-2.5 py-1 bg-white rounded-lg border border-woodBrown">เกิด</span>
-              <span>- - - 1 นาที / ตั้งอยู่ - - -</span>
-              <span class="px-2.5 py-1 bg-peachSoft rounded-lg border border-woodBrown">ตาย</span>
-            </div>
-            <p class="text-xs font-bold text-lightBrown mt-2">
-              "ร่างกายจึงเป็นอมตะธาตุตลอดเวลา<br>ร่างกายคือ มายา ที่เปลี่ยนแปลงทุกขณะ ~ ไม่มีชื่อ ว่าเป็นอะไร ~"
-            </p>
-          </div>
-
-          <!-- Bottom Time Row -->
-          <div class="grid grid-cols-3 gap-2 text-center text-xs font-bold mt-2 pt-2 border-t border-dashed border-lightBrown/40">
-            <div class="bg-white p-2 rounded-lg border border-lightBrown/30">
-              <p class="text-lightBrown">อดีต</p>
-              <p class="text-woodBrown font-extrabold">= สุญญตา</p>
-            </div>
-            <div class="bg-peachSoft/50 p-2 rounded-lg border border-woodBrown">
-              <p class="text-peachDark">ปัจจุบันเวลา</p>
-              <p class="text-woodBrown font-extrabold">เกิด-ตั้งอยู่-ดับ (อนิจจัง)</p>
-            </div>
-            <div class="bg-white p-2 rounded-lg border border-lightBrown/30">
-              <p class="text-lightBrown">อนาคต</p>
-              <p class="text-woodBrown font-extrabold">คือไม่มี</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-3 bg-peachSoft/40 p-2.5 rounded-xl border-2 border-woodBrown text-center">
-        <p class="comic-title font-extrabold text-xs sm:text-sm text-woodBrown">
-          ร่างกาย = ธาตุไม่รู้ ➔ แล้วความลืมตัว-เห็นแก่ตัวอยู่ที่ใคร?
-        </p>
-      </div>
-    </div>
-
-    <!-- ==================== BOARD 3: ป.เอก ==================== -->
-    <div id="board-2" class="hidden flex-col flex-1">
-      <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 mb-4 border-b-[3px] border-dashed border-lightBrown/40 gap-2 shrink-0">
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-sageGreen text-white border-2 border-woodBrown text-xs sm:text-sm comic-title font-extrabold mb-1">
-            <span>👑 ป.เอก • รู้แจ้งสัจธรรม</span>
-          </div>
-          <h1 class="comic-title text-xl sm:text-3xl font-extrabold text-woodBrown tracking-tight">
-            พระธรรมเป็นเครื่องกำจัดทุกข์ (จับไอ้วอก)
-          </h1>
-        </div>
-        <div class="text-xs sm:text-sm text-lightBrown font-bold bg-warmBeige px-3 py-1.5 rounded-xl border-2 border-woodBrown">
-          2026-10-07 เรียนกระดาน 3
-        </div>
-      </header>
-
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1">
-        <!-- ฝั่งซ้าย 7 คอลัมน์: ฐานกาย & ไตรลักษณ์ -->
-        <div class="md:col-span-7 flex flex-col gap-3">
-          <!-- ฐานของความจริง -->
-          <div class="comic-box p-3 sm:p-4">
-            <p class="comic-title text-xs sm:text-sm font-extrabold text-peachDark mb-1">
-              1. ฐานของความจริง : รู้สึกตัวทั่วพร้อม
-            </p>
-            <div class="bg-warmBeige p-2 rounded-xl border border-lightBrown/30 text-center my-1.5">
-              <p class="font-extrabold text-xs text-woodBrown">กายคตาสติ (ศรัทธา - เพียร - สติ - สมาธิ - ปัญญา)</p>
-            </div>
-            <p class="text-xs font-semibold text-lightBrown text-center">
-              ศึกษาไอ้วอก 24 ชม. • รู้ทันเสียงหลอก "กูแก่ กูเจ็บ กูตาย"
-            </p>
-          </div>
-
-          <!-- เห็นไอ้วอก = อนิจจัง -->
-          <div class="comic-box p-3 sm:p-4">
-            <p class="comic-title text-xs sm:text-sm font-extrabold text-sageGreen mb-1">
-              2. เห็น ไอ้วอก = อนิจจัง (บ่อยๆ ซ้ำๆ)
-            </p>
-            <div class="flex items-center justify-around bg-cream p-2.5 rounded-xl border border-lightBrown/20 text-center text-xs font-bold text-woodBrown">
-              <span>เกิดที่ขันธ์</span>
-              <span>➔</span>
-              <span class="text-peachDark">เกิด • ตั้งอยู่ • ดับ (ตาย)</span>
-              <span>➔</span>
-              <span>รู้ในปัจจุบัน</span>
-            </div>
-            <p class="text-[11px] text-center font-bold text-lightBrown mt-2">
-              "ไอ้วอกหมดตัวตน : มี - ไม่มี ~ ไอ้วอกตาย"
-            </p>
-          </div>
-        </div>
-
-        <!-- ฝั่งขวา 5 คอลัมน์: บริวารไอ้วอก & รสชาติพระธรรม -->
-        <div class="md:col-span-5 flex flex-col justify-between comic-box p-4 bg-white">
-          <div>
-            <div class="bg-pastelYellow/50 p-3 rounded-2xl border-2 border-woodBrown text-center mb-3">
-              <p class="comic-title font-extrabold text-xs sm:text-sm text-peachDark mb-1">
-                "ยึด" จำ คิด รู้สึก
-              </p>
-              <p class="text-xs font-bold text-woodBrown">
-                สุข, ทุกข์, เฉย เป็นบริวาร
-              </p>
-            </div>
-
-            <div class="text-center space-y-1.5 my-2">
-              <p class="font-extrabold text-xs sm:text-sm text-woodBrown comic-title">
-                ให้ไอ้วอกผลิตความว่าง
-              </p>
-              <p class="text-xs font-semibold text-lightBrown">
-                ยิ่งเจอไอ้วอกเยอะ ตัวตนจะจืดลง<br>
-                กลายเป็น <strong class="text-woodBrown">"รสชาติของธรรม"</strong>
-              </p>
-            </div>
-          </div>
-
-          <!-- วงกลมเซน Enso Symbol -->
-          <div class="flex flex-col items-center justify-center pt-2 border-t border-dashed border-lightBrown/30">
-            <svg width="60" height="60" viewBox="0 0 50 50">
-              <circle cx="25" cy="25" r="18" fill="none" stroke="#3A2D2C" stroke-width="4" stroke-linecap="round" stroke-dasharray="80 20" />
-            </svg>
-            <p class="text-[11px] font-extrabold text-woodBrown comic-title mt-1">
-              สิ่งนี้มี สิ่งนี้ย่อมมี • สิ่งนี้ไม่มี สิ่งนี้ย่อมไม่มี
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Footer Note Inside Artboard -->
-    <footer class="mt-4 pt-3 border-t-2 border-lightBrown/30 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs sm:text-sm text-woodBrown font-semibold comic-title gap-2 shrink-0">
-      <div class="flex items-center gap-2">
-        <span class="inline-block w-3 h-3 rounded-full bg-sageGreen"></span>
-        <span>มีสติรู้ฐานกาย รู้ทันไอ้วอก ปล่อยให้ทุกสิ่งดับไปตามธรรมดา</span>
-      </div>
-      <div class="text-lightBrown font-bold">
-        *2026-10-07 บันทึกกระดานธรรม
-      </div>
-    </footer>
-
-  </main>
-
-  <!-- Interactive Script -->
-  <script>
-    function switchBoard(index) {
-      for (let i = 0; i < 3; i++) {
-        const board = document.getElementById(`board-${i}`);
-        const btn = document.getElementById(`btn-board-${i}`);
+    // Helper Synthesizer: Tibetan Singing Bowl 528Hz
+    const playZenBell = () => {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
         
-        if (i === index) {
-          board.classList.remove('hidden');
-          board.classList.add('flex');
-          btn.className = "flex-1 sm:flex-none px-4 py-2 rounded-full border-[2.5px] border-woodBrown bg-peachSoft text-woodBrown font-bold text-xs sm:text-sm shadow-sm transition";
-        } else {
-          board.classList.add('hidden');
-          board.classList.remove('flex');
-          btn.className = "flex-1 sm:flex-none px-4 py-2 rounded-full border-[2.5px] border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition";
-        }
+        const fundamental = 528; // ความถี่ Solfeggio 528Hz
+        const harmonics = [1, 2.76, 5.4, 8.1];
+        const gains = [0.4, 0.18, 0.08, 0.03];
+
+        harmonics.forEach((h, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = i === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(fundamental * h, ctx.currentTime);
+
+          gain.gain.setValueAtTime(gains[i], ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.2);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start();
+          osc.stop(ctx.currentTime + 3.2);
+        });
+      } catch (e) {
+        console.log('AudioContext not allowed yet', e);
       }
-      document.querySelector('main').scrollTop = 0;
+    };
+
+    function App() {
+      const [currentBoard, setCurrentBoard] = useState(0);
+      const [monkeyState, setMonkeyState] = useState('jumping'); // 'jumping' | 'noticed' | 'empty'
+      const [isBreathingIn, setIsBreathingIn] = useState(true);
+
+      // Auto-breath toggler for practicing 24-hr mindfulness
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setIsBreathingIn(prev => !prev);
+        }, 3000);
+        return () => clearInterval(interval);
+      }, []);
+
+      const boards = [
+        {
+          id: "board1",
+          level: "ป.ตรี",
+          tagColor: "bg-dustyBlue text-white",
+          title: "ทำบทศึกษา : กรรมของตน",
+          subtitle: "เรียนรู้เรื่องร่างกายคือใคร? กายคือก้อนธาตุเดินทาง",
+          boardNo: "2026-10-07 เรียนกระดาน 1"
+        },
+        {
+          id: "board2",
+          level: "ป.โท",
+          tagColor: "bg-peachDark text-white",
+          title: "ฝึกสติ ที่ระลึกถูกมาก.. 24 ชม.",
+          subtitle: "เห็นความเกิดดับของลมหายใจและร่างกายในปัจจุบันเวลา",
+          boardNo: "2026-10-07 เรียนกระดาน 2"
+        },
+        {
+          id: "board3",
+          level: "ป.เอก",
+          tagColor: "bg-sageGreen text-white",
+          title: "พระธรรมเป็นเครื่องกำจัดทุกข์ (จับไอ้วอก)",
+          subtitle: "ตั้งฐานกายคตาสติ รู้ทันขันธ์ 5 เปลี่ยนสู่ความว่าง",
+          boardNo: "2026-10-07 เรียนกระดาน 3"
+        }
+      ];
+
+      const handleBoardChange = (idx) => {
+        setCurrentBoard(idx);
+        playZenBell();
+      };
+
+      return (
+        <div className="w-full max-w-[1024px] flex flex-col items-center">
+          
+          {/* Top Controller Bar */}
+          <div className="w-full flex flex-wrap items-center justify-between mb-4 px-2 gap-3">
+            <div className="flex items-center gap-2">
+              <a 
+                href="index.html" 
+                className="px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition shadow-[2px_2px_0px_0px_#3A2D2C] flex items-center gap-1.5 comic-title"
+              >
+                <span>←</span> สารบัญหลัก
+              </a>
+              <span className="inline-block w-4 h-4 rounded-full bg-peachDark"></span>
+              <span className="comic-title font-bold text-woodBrown text-sm sm:text-base md:text-lg">
+                Back to School (7 ต.ค. 2569)
+              </span>
+            </div>
+
+            {/* Board Selector Tabs */}
+            <div className="flex flex-wrap items-center gap-2 comic-title w-full sm:w-auto">
+              {boards.map((b, idx) => (
+                <button
+                  key={b.id}
+                  onClick={() => handleBoardChange(idx)}
+                  className={`flex-1 sm:flex-none px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full border-[2.5px] border-woodBrown font-bold text-xs sm:text-sm transition ${
+                    currentBoard === idx 
+                      ? 'bg-peachSoft text-woodBrown shadow-[3px_3px_0px_0px_#3A2D2C] scale-105' 
+                      : 'bg-white text-woodBrown hover:bg-warmBeige'
+                  }`}
+                >
+                  แผ่น {idx + 1}: {b.level}
+                </button>
+              ))}
+
+              {/* Sound Bell Button */}
+              <button
+                onClick={playZenBell}
+                title="เคาะระฆังเจริญสติ"
+                className="px-3 py-1.5 sm:py-2 rounded-full border-[2.5px] border-woodBrown bg-pastelYellow text-woodBrown font-bold text-xs sm:text-sm hover:bg-amber-200 transition shadow-[2px_2px_0px_0px_#3A2D2C] flex items-center gap-1"
+              >
+                <span>🔔</span> ระฆังสติ
+              </button>
+            </div>
+          </div>
+
+          {/* Main Infographic Artboard */}
+          <main className="w-full lg:aspect-[4/3] bg-cream rounded-[2rem] border-[4px] border-woodBrown shadow-[8px_8px_0px_0px_#3A2D2C] relative flex flex-col p-4 sm:p-7 overflow-y-auto hide-scrollbar" style={{ maxHeight: '85vh' }}>
+            
+            {/* Header Area */}
+            <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 mb-4 border-b-[3px] border-dashed border-lightBrown/40 gap-2 shrink-0">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full border-2 border-woodBrown text-xs sm:text-sm comic-title font-extrabold mb-1.5 shadow-sm">
+                  <span className={`px-2 py-0.5 rounded-full ${boards[currentBoard].tagColor}`}>{boards[currentBoard].level}</span>
+                  <span className="text-woodBrown">{boards[currentBoard].subtitle}</span>
+                </div>
+                <h1 className="comic-title text-xl sm:text-3xl font-extrabold text-woodBrown tracking-tight leading-tight">
+                  {boards[currentBoard].title}
+                </h1>
+              </div>
+              <div className="text-xs sm:text-sm text-lightBrown font-bold bg-warmBeige px-3.5 py-1.5 rounded-xl border-2 border-woodBrown shadow-sm">
+                {boards[currentBoard].boardNo}
+              </div>
+            </header>
+
+            {/* BOARD 1: ป.ตรี */}
+            {currentBoard === 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+                {/* Col 1: กาย คือใคร? */}
+                <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-4 flex flex-col justify-between shadow-[4px_4px_0px_0px_#3A2D2C]">
+                  <div>
+                    <h3 className="comic-title text-base sm:text-lg font-bold text-peachDark text-center mb-0.5">
+                      กาย คือใคร...?
+                    </h3>
+                    <p className="text-xs text-center font-bold text-lightBrown mb-3">
+                      อดีตกรรมเก่า + ปัจจุบันพระอภิธัม
+                    </p>
+                    <div className="flex justify-center my-2">
+                      <svg width="130" height="95" viewBox="0 0 120 90">
+                        <circle cx="60" cy="30" r="14" fill="#FFDFC7" className="clean-line" />
+                        <path d="M42 68 C45 48 75 48 78 68 Z" fill="#F3ECE1" className="clean-line" />
+                        <ellipse cx="60" cy="72" rx="30" ry="8" fill="#D9C5B2" className="clean-line" />
+                        <circle cx="20" cy="25" r="9" fill="#859A72" className="clean-line-thin"/>
+                        <text x="16" y="29" fontSize="9" fontWeight="bold" fill="#FFF">ดิน</text>
+                        <circle cx="20" cy="50" r="9" fill="#6A879E" className="clean-line-thin"/>
+                        <text x="16" y="54" fontSize="9" fontWeight="bold" fill="#FFF">น้ำ</text>
+                        <circle cx="100" cy="25" r="9" fill="#FAF6F0" className="clean-line-thin"/>
+                        <text x="96" y="29" fontSize="9" fontWeight="bold" fill="#3A2D2C">ลม</text>
+                        <circle cx="100" cy="50" r="9" fill="#D85C3A" className="clean-line-thin"/>
+                        <text x="97" y="54" fontSize="9" fontWeight="bold" fill="#FFF">ไฟ</text>
+                      </svg>
+                    </div>
+                    <div className="bg-warmBeige p-2.5 rounded-xl border border-lightBrown/30 text-center mb-2">
+                      <p className="font-extrabold text-xs text-woodBrown comic-title">ธาตุไม่รู้ • ลมหายใจ = ธาตุเดินทาง</p>
+                    </div>
+                  </div>
+                  <div className="bg-cream p-3 rounded-2xl border-2 border-dashed border-lightBrown/40 text-center">
+                    <p className="font-bold text-xs sm:text-sm text-woodBrown leading-snug">
+                      กายไม่มีฉลาด ไม่มีโง่<br/>
+                      <span className="text-peachDark font-extrabold text-sm sm:text-base">เป็นก้อนธาตุที่เดินทางตามธรรมชาติ</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Col 2: กาย = ธาตุสุญญตา */}
+                <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-4 flex flex-col justify-between shadow-[4px_4px_0px_0px_#3A2D2C]">
+                  <div>
+                    <h3 className="comic-title text-base sm:text-lg font-bold text-sageGreen text-center mb-0.5">
+                      กาย = ธาตุสุญญตา
+                    </h3>
+                    <p className="text-xs text-center font-bold text-lightBrown mb-3">
+                      (ความว่าง)
+                    </p>
+                    <div className="flex justify-center my-2">
+                      <svg width="130" height="95" viewBox="0 0 120 90">
+                        <circle cx="60" cy="30" r="14" fill="none" stroke="#859A72" strokeWidth="2.5" strokeDasharray="3,3" />
+                        <path d="M42 68 C45 48 75 48 78 68 Z" fill="none" stroke="#859A72" strokeWidth="2.5" strokeDasharray="3,3" />
+                        <text x="60" y="18" fontSize="8" textAnchor="middle" fontWeight="bold" fill="#859A72">เกิดบนความว่าง</text>
+                        <text x="60" y="50" fontSize="8" textAnchor="middle" fontWeight="bold" fill="#859A72">เดินทาง/ตั้งอยู่</text>
+                        <text x="60" y="82" fontSize="8" textAnchor="middle" fontWeight="bold" fill="#D85C3A">ปลายทาง คืนสู่ความว่าง</text>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="bg-cream p-3 rounded-2xl border-2 border-dashed border-lightBrown/40 text-center">
+                    <p className="font-bold text-xs sm:text-sm text-woodBrown leading-snug">
+                      ธาตุสุญญตา ไม่เคยตาย<br/>
+                      <span className="text-sageGreen font-extrabold text-sm sm:text-base">เขาเป็นอมตะธัม</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Col 3: รูปธัมเป็นมายา */}
+                <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-4 flex flex-col justify-between shadow-[4px_4px_0px_0px_#3A2D2C]">
+                  <div>
+                    <h3 className="comic-title text-base sm:text-lg font-bold text-dustyBlue text-center mb-0.5">
+                      รูปธัม เป็นมายา
+                    </h3>
+                    <p className="text-xs text-center font-bold text-lightBrown mb-3">
+                      ธรรม vs กรรม
+                    </p>
+                    <div className="flex justify-center my-2">
+                      <svg width="130" height="95" viewBox="0 0 120 90">
+                        <circle cx="60" cy="28" r="12" fill="#FFDFC7" className="clean-line-thin" />
+                        <path d="M46 62 C48 46 72 46 74 62 Z" fill="#E8F1F5" className="clean-line-thin" />
+                        <circle cx="35" cy="30" r="9" fill="#FAF6F0" opacity="0.9" stroke="#3A2D2C" strokeWidth="1.5"/>
+                        <text x="26" y="16" fontSize="8" fontWeight="bold" fill="#3A2D2C">ธรรม</text>
+                        <circle cx="85" cy="32" r="9" fill="#3A2D2C" opacity="0.8"/>
+                        <text x="80" y="18" fontSize="8" fontWeight="bold" fill="#FFF">กรรม</text>
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="bg-cream p-3 rounded-2xl border-2 border-dashed border-lightBrown/40 text-center">
+                    <p className="font-bold text-xs sm:text-sm text-woodBrown leading-snug">
+                      มายา มีอยู่โดยเหตุ (กรรม)<br/>
+                      <span className="text-dustyBlue font-extrabold text-sm sm:text-base">และ ผล (เดินทาง)</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* BOARD 2: ป.โท */}
+            {currentBoard === 1 && (
+              <div className="flex flex-col gap-4 flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                  
+                  {/* ซ้าย: ปฏิบัติ 3 ทาง */}
+                  <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-5 flex flex-col justify-around gap-2 shadow-[4px_4px_0px_0px_#3A2D2C]">
+                    <div className="flex items-center gap-3 bg-cream p-3 rounded-2xl border border-lightBrown/20">
+                      <span className="text-2xl">🌱</span>
+                      <div>
+                        <p className="font-bold text-sm sm:text-base text-woodBrown comic-title">• เห็นร่างกายคือความว่าง</p>
+                        <p className="text-xs text-lightBrown font-semibold">เกิด-แก่-เจ็บ-ตาย อยู่ทุกลมหายใจ</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 bg-cream p-3 rounded-2xl border border-lightBrown/20">
+                      <span className="text-2xl">💨</span>
+                      <div>
+                        <p className="font-bold text-sm sm:text-base text-woodBrown comic-title">• เห็นลมหายใจ เข้า(-ออก)</p>
+                        <p className="text-xs text-lightBrown font-semibold">ลมเข้าก็เกิด-แก่-ดับ ลมออกก็เกิด-แก่-ดับ</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 bg-cream p-3 rounded-2xl border border-lightBrown/20">
+                      <span className="text-2xl">🔍</span>
+                      <div>
+                        <p className="font-bold text-sm sm:text-base text-woodBrown comic-title">• เห็นผม, ขน, เล็บ... ในปัจจุบัน</p>
+                        <p className="text-xs text-lightBrown font-semibold">แม้ใน 1 นาที เซลล์ก็เกิด-แก่-เจ็บ-ตาย ตลอดเวลา</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ขวา: แผนผังเวลา + Interactive ลมหายใจ */}
+                  <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-5 flex flex-col justify-between shadow-[4px_4px_0px_0px_#3A2D2C]">
+                    <div className="text-center">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-warmBeige rounded-full border border-woodBrown font-bold text-xs text-woodBrown comic-title mb-2">
+                        <span>🌬️ ลมหายใจขณะนี้:</span>
+                        <span className={`font-extrabold ${isBreathingIn ? 'text-sageGreen' : 'text-peachDark'}`}>
+                          {isBreathingIn ? 'หายใจเข้า (เกิด)' : 'หายใจออก (ดับ)'}
+                        </span>
+                      </div>
+                      
+                      <div className="my-2 flex justify-center items-center">
+                        <div className={`w-16 h-16 rounded-full border-4 border-woodBrown flex items-center justify-center font-bold text-xs transition-all duration-1000 ${
+                          isBreathingIn ? 'bg-sageGreen/30 scale-110' : 'bg-peachSoft/40 scale-95'
+                        }`}>
+                          {isBreathingIn ? 'พอง' : 'ยุบ'}
+                        </div>
+                      </div>
+
+                      <div className="bg-warmBeige/50 p-2.5 rounded-2xl border border-lightBrown/30 text-center mt-2">
+                        <div className="flex items-center justify-center gap-2 font-extrabold text-xs sm:text-sm text-woodBrown my-1">
+                          <span className="px-2 py-0.5 bg-white rounded border border-woodBrown">เกิด</span>
+                          <span>- - 1 นาที / ตั้งอยู่ - -</span>
+                          <span className="px-2 py-0.5 bg-peachSoft rounded border border-woodBrown">ตาย</span>
+                        </div>
+                        <p className="text-[11px] font-bold text-lightBrown">
+                          ร่างกายจึงเป็นอมตะธาตุตลอดเวลา ร่างกายคือมายาที่เปลี่ยนทุกขณะ
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Timeline Footer */}
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold pt-2 border-t border-dashed border-lightBrown/30">
+                      <div className="bg-cream p-2 rounded-xl border border-lightBrown/30">
+                        <p className="text-lightBrown">อดีต</p>
+                        <p className="text-woodBrown font-extrabold">= สุญญตา</p>
+                      </div>
+                      <div className="bg-peachSoft/50 p-2 rounded-xl border-2 border-woodBrown">
+                        <p className="text-peachDark">ปัจจุบันเวลา</p>
+                        <p className="text-woodBrown font-extrabold">เกิด-ตั้งอยู่-ดับ</p>
+                      </div>
+                      <div className="bg-cream p-2 rounded-xl border border-lightBrown/30">
+                        <p className="text-lightBrown">อนาคต</p>
+                        <p className="text-woodBrown font-extrabold">คือไม่มี</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-pastelYellow p-3 rounded-2xl border-2 border-woodBrown text-center shadow-sm">
+                  <p className="comic-title font-extrabold text-xs sm:text-base text-woodBrown">
+                    💡 ร่างกาย = ธาตุไม่รู้ ➔ แล้วความลืมตัว-เห็นแก่ตัว อยู่ที่ใคร?
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* BOARD 3: ป.เอก */}
+            {currentBoard === 2 && (
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1">
+                {/* 7 Columns ซ้าย: ฐานกาย & ไตรลักษณ์ */}
+                <div className="md:col-span-7 flex flex-col gap-3">
+                  <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-4 shadow-[4px_4px_0px_0px_#3A2D2C]">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="comic-title text-sm sm:text-base font-extrabold text-peachDark">
+                        1. ฐานของความจริง : รู้สึกตัวทั่วพร้อม
+                      </p>
+                      <span className="text-xs bg-peachSoft px-2 py-0.5 rounded-full border border-woodBrown font-bold">24 ชม.</span>
+                    </div>
+                    <div className="bg-warmBeige p-2.5 rounded-2xl border border-lightBrown/30 text-center my-2">
+                      <p className="font-extrabold text-xs sm:text-sm text-woodBrown comic-title">
+                        กายคตาสติ (ศรัทธา - เพียร - สติ - สมาธิ - ปัญญา)
+                      </p>
+                    </div>
+                    <p className="text-xs font-semibold text-lightBrown text-center">
+                      ศึกษาไอ้วอกตลอดวัน • รู้ทันเสียงหลอก "กูแก่ กูเจ็บ กูตาย!"
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-3xl border-[3.5px] border-woodBrown p-4 shadow-[4px_4px_0px_0px_#3A2D2C] flex-1 flex flex-col justify-between">
+                    <div>
+                      <p className="comic-title text-sm sm:text-base font-extrabold text-sageGreen mb-1">
+                        2. เห็น ไอ้วอก = อนิจจัง (บ่อยๆ ซ้ำๆ)
+                      </p>
+                      <div className="flex items-center justify-around bg-cream p-3 rounded-2xl border border-lightBrown/20 text-center text-xs font-bold text-woodBrown my-2">
+                        <span className="bg-white px-2 py-1 rounded-lg border">เกิดที่ขันธ์ 5</span>
+                        <span>➔</span>
+                        <span className="text-peachDark bg-peachSoft px-2 py-1 rounded-lg border border-woodBrown font-extrabold">เกิด • ตั้งอยู่ • ดับ</span>
+                        <span>➔</span>
+                        <span className="bg-white px-2 py-1 rounded-lg border">จิตรู้ปัจจุบัน</span>
+                      </div>
+                    </div>
+                    <div className="bg-warmBeige/60 p-2.5 rounded-xl border border-lightBrown/30 text-center">
+                      <p className="text-xs font-extrabold text-woodBrown comic-title">
+                        "ไอ้วอกหมดตัวตน : มี - ไม่มี ~ ไอ้วอกตาย"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5 Columns ขวา: การทำงานของไอ้วอก & Interactive Button */}
+                <div className="md:col-span-5 bg-white rounded-3xl border-[3.5px] border-woodBrown p-4 flex flex-col justify-between shadow-[4px_4px_0px_0px_#3A2D2C]">
+                  <div>
+                    <div className="bg-pastelYellow/50 p-3 rounded-2xl border-2 border-woodBrown text-center mb-3">
+                      <p className="comic-title font-extrabold text-xs sm:text-sm text-peachDark mb-0.5">
+                        "ยึด" จำ คิด รู้สึก
+                      </p>
+                      <p className="text-xs font-bold text-woodBrown">
+                        สุข, ทุกข์, เฉย เป็นบริวาร
+                      </p>
+                    </div>
+
+                    {/* Interactive Monkey State Simulation */}
+                    <div className="bg-cream p-3 rounded-2xl border-2 border-dashed border-lightBrown/40 text-center my-2">
+                      <p className="text-xs font-bold text-lightBrown mb-1.5">กดจำลองสภาวะจิตรู้ทัน:</p>
+                      <div className="flex justify-center gap-1.5 mb-2">
+                        <button
+                          onClick={() => setMonkeyState('jumping')}
+                          className={`px-2.5 py-1 rounded-full border text-xs font-bold transition ${
+                            monkeyState === 'jumping' ? 'bg-peachDark text-white border-woodBrown' : 'bg-white text-woodBrown'
+                          }`}
+                        >
+                          หลงยึด
+                        </button>
+                        <button
+                          onClick={() => { setMonkeyState('noticed'); playZenBell(); }}
+                          className={`px-2.5 py-1 rounded-full border text-xs font-bold transition ${
+                            monkeyState === 'noticed' ? 'bg-sageGreen text-white border-woodBrown' : 'bg-white text-woodBrown'
+                          }`}
+                        >
+                          รู้ทัน
+                        </button>
+                        <button
+                          onClick={() => { setMonkeyState('empty'); playZenBell(); }}
+                          className={`px-2.5 py-1 rounded-full border text-xs font-bold transition ${
+                            monkeyState === 'empty' ? 'bg-dustyBlue text-white border-woodBrown' : 'bg-white text-woodBrown'
+                          }`}
+                        >
+                          ว่าง
+                        </button>
+                      </div>
+
+                      {monkeyState === 'jumping' && (
+                        <p className="text-xs font-bold text-peachDark">🐵 ไอ้วอกกระโดด: "กูแก่ กูเจ็บ กูตาย รสชาติเข้มข้น!"</p>
+                      )}
+                      {monkeyState === 'noticed' && (
+                        <p className="text-xs font-bold text-sageGreen">👁️ ไอ้ใบ้จ้องมอง: ไอ้วอกเริ่มขยับไม่ออก ตัวตนเจือจางลง</p>
+                      )}
+                      {monkeyState === 'empty' && (
+                        <p className="text-xs font-bold text-dustyBlue">⭕ คืนสู่ความว่าง: ดับไปตามธรรมดา กลายเป็นรสชาติพระธรรม</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Enso Zen Circle */}
+                  <div className="flex flex-col items-center justify-center pt-2 border-t border-dashed border-lightBrown/30">
+                    <svg width="60" height="60" viewBox="0 0 50 50">
+                      <circle cx="25" cy="25" r="18" fill="none" stroke="#3A2D2C" strokeWidth="4" strokeLinecap="round" strokeDasharray="80 20" />
+                    </svg>
+                    <p className="text-[11px] font-extrabold text-woodBrown comic-title mt-1 text-center">
+                      สิ่งนี้มี สิ่งนี้ย่อมมี • สิ่งนี้ไม่มี สิ่งนี้ย่อมไม่มี
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Bottom Footer Note Inside Artboard */}
+            <footer className="mt-4 pt-3 border-t-2 border-lightBrown/30 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs sm:text-sm text-woodBrown font-semibold comic-title gap-2 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-3 h-3 rounded-full bg-sageGreen"></span>
+                <span>มีสติรู้ฐานกาย รู้ทันไอ้วอก ปล่อยให้ทุกสิ่งดับไปตามธรรมดา</span>
+              </div>
+              <div className="text-lightBrown font-bold">
+                *บันทึกธรรมะหน้ากระดานฉบับพกใจ
+              </div>
+            </footer>
+
+          </main>
+        </div>
+      );
     }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>
