@@ -1,0 +1,1368 @@
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import {
+  Sparkles,
+  BookOpen,
+  Calendar,
+  Search,
+  Volume2,
+  VolumeX,
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
+  Smile,
+  Frown,
+  Meh,
+  Wind,
+  Plus,
+  Eye,
+  Feather,
+  Flame,
+  Droplets,
+  Mountain,
+  Heart,
+  Share2,
+  Check,
+  X,
+  Info,
+  Clock,
+  Home
+} from 'lucide-react';
+
+// =================================================================
+// 1. INITIAL JOURNAL DATA (โครงสร้างข้อมูลรองรับการเพิ่มคืนใหม่ได้ไม่จำกัด)
+// =================================================================
+const INITIAL_JOURNAL_DATA = [
+  {
+    id: 'night-2026-10-08',
+    date: '2026-10-08',
+    displayDate: '8 ต.ค. 2026',
+    title: 'รู้ทัน "ไอ้วอก" & 3 ก้าวภาวนาในชีวิตจริง',
+    summary: 'แยกแยะผู้มาอาศัย (ไอ้วอก) กับจิตรู้ตื่น (ไอ้ใบ้) สู่การนำไปปฏิบัติ 24 ชม.',
+    tags: ['ไอ้วอก', 'ไอ้ใบ้', 'เวทนา 3', '3 ก้าวภาวนา', 'ฐานกาย'],
+    sheets: [
+      {
+        id: 'sheet-08-1',
+        sheetLabel: 'แผ่นที่ 1',
+        academicLevel: 'รู้ทันจิต',
+        title: 'รู้ทัน "ไอ้วอก" (ผู้มาอาศัย) & เข้าถึง "ไอ้ใบ้" (จิตรู้ตื่น)',
+        subtitle: 'การรู้ทันมายาและการแยกแยะเวทนา 3 ทางอารมณ์',
+        type: 'compare_characters',
+        leftCharacter: {
+          name: 'รู้จัก "ไอ้วอก" (จิตหลงผู้ยึดครอง)',
+          tag: 'ผู้มาอาศัยจอมซน',
+          quote: 'ชอบหลอกว่าเป็นเจ้าของบ้าน: "กูแก่! กูเจ็บ! กูตาย!"',
+          desc: 'อาศัยเกาะกินอาหารผ่านขันธ์ 5 (สัญญา-ความจำ, สังขาร-ความคิด, เวทนา-ความรู้สึก)',
+          vedanaList: [
+            { name: 'สุขเวทนา', desc: 'ติดใจ พอใจ อยากยึดไว้', emotion: 'สุข' },
+            { name: 'ทุกขเวทนา', desc: 'ขัดใจ หงุดหงิด ผลักไส', emotion: 'ทุกข์' },
+            { name: 'อทุกขมสุข', desc: 'เฉยๆ ยังไม่ตัดสิน ยังไม่ใช่สงบแท้', emotion: 'เฉย' }
+          ]
+        },
+        rightCharacter: {
+          name: 'สภาวะ "ไอ้ใบ้" (จิตรู้ที่แท้จริง)',
+          tag: 'จิตรู้ตื่นบริสุทธิ์',
+          qualities: 'เงียบ • นิ่ง • รู้ตื่น • ไม่พูด • ไม่แทรกแซง • ไม่ปรุงแต่ง',
+          results: [
+            'ไอ้วอกกระโดดไม่ออก พลังงานตัวตนเจือจางลง',
+            'เปลี่ยนจาก "รสชาติเข้มข้นของวัฏฏะ (กิเลส)" ไปสู่ "รสชาติจืดสนิท/ความว่างของพระธรรม"'
+          ]
+        }
+      },
+      {
+        id: 'sheet-08-2',
+        sheetLabel: 'แผ่นที่ 2',
+        academicLevel: 'ปฏิบัติจริง',
+        title: '3 ก้าวภาวนาในชีวิตประจำวัน (เปลี่ยนวิถีรู้ใน 24 ชั่วโมง)',
+        subtitle: 'สรุปภาพรวมเชื่อมโยงสู่การปฏิบัติจริงขณะ ยืน เดิน นั่ง นอน ดื่มน้ำ',
+        type: 'three_steps',
+        steps: [
+          {
+            stepNumber: 1,
+            title: 'มองกายให้ตรงตามจริง (มองกายเป็นบ้าน)',
+            desc: 'กายคือ "ก้อนธาตุเดินทาง" และ "วิบากกรรมเก่า" ไม่ใช่ตัวเราจริง ๆ ร่างกายแก่และสลายไปตามธรรมชาติ',
+            motto: 'ของเค้าให้คืนเจ้าของ ไม่ใช่ของกู'
+          },
+          {
+            stepNumber: 2,
+            title: 'ปลูก "ฐานกาย" ให้มั่นคง (18–24 ชม.)',
+            desc: 'เกาะอยู่กับลมหายใจและอิริยาบถในชีวิตประจำวัน เมื่อฐานกายแน่น ไอ้วอกจะไม่มีที่แทรกตัว',
+            motto: 'กายคตาสติเป็นเรือนพักอันปลอดภัย'
+          },
+          {
+            stepNumber: 3,
+            title: 'ไม่ฆ่า ไม่ไล่ แค่ "รู้ทัน"',
+            desc: 'กิเลสและไอ้วอกดับไปด้วย "กฎไตรลักษณ์" ไม่ใช่การฝืนบังคับ เพียงแค่รู้ทัน จิตจะคืนสู่ความว่างและความสงบเย็นอย่างแท้จริง',
+            motto: 'กิเลสดับเองตามธรรมชาติ'
+          }
+        ],
+        footerBanner: 'มีสติรู้ฐานกาย รู้ทันไอ้วอก ปล่อยให้ทุกสิ่งดับไปตามธรรมดา'
+      }
+    ]
+  },
+  {
+    id: 'night-2026-10-07',
+    date: '2026-10-07',
+    displayDate: '7 ต.ค. 2026',
+    title: 'Back to School: ก้อนธาตุเดินทาง & เครื่องกำจัดทุกข์',
+    summary: 'บทเรียน 3 ระดับ (ป.ตรี, ป.โท, ป.เอก) เรียนรู้รูปธาตุ มายา และการจับไอ้วอก',
+    tags: ['ป.ตรี', 'ป.โท', 'ป.เอก', 'สุญญตา', 'ลมหายใจ', 'ขันธ์ 5', 'จับไอ้วอก'],
+    sheets: [
+      {
+        id: 'sheet-07-1',
+        sheetLabel: 'แผ่นที่ 1',
+        academicLevel: 'ป.ตรี',
+        title: 'ทำบทศึกษา : กรรมของตน',
+        subtitle: 'แยกแยะก้อนธาตุเดินทาง ออกจากมายาของกรรม',
+        type: 'board_bachelor'
+      },
+      {
+        id: 'sheet-07-2',
+        sheetLabel: 'แผ่นที่ 2',
+        academicLevel: 'ป.โท',
+        title: 'ฝึกสติ ที่ระลึกถูกมาก.. 24 ชม.',
+        subtitle: 'เห็นไตรลักษณ์ที่เกิดขึ้นจริงในปัจจุบันเวลา 1-2 นาที',
+        type: 'board_master'
+      },
+      {
+        id: 'sheet-07-3',
+        sheetLabel: 'แผ่นที่ 3',
+        academicLevel: 'ป.เอก',
+        title: 'พระธรรมเป็นเครื่องกำจัดทุกข์ (จับไอ้วอก)',
+        subtitle: 'ฐานของความจริง 24 ชม. & เห็นไอ้วอกเป็นอนิจจัง',
+        type: 'board_doctorate'
+      }
+    ]
+  }
+];
+
+// =================================================================
+// 2. MAIN APPLICATION COMPONENT
+// =================================================================
+export default function App() {
+  const [journal, setJournal] = useState(INITIAL_JOURNAL_DATA);
+  const [selectedNightIndex, setSelectedNightIndex] = useState(0);
+  const [activeSheetIndex, setActiveSheetIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Zen Interactive States
+  const [breathingActive, setBreathingActive] = useState(false);
+  const [breathPhase, setBreathPhase] = useState('หายใจเข้า (เกิด)');
+  const [breathSeconds, setBreathSeconds] = useState(0);
+
+  // Monkey interactive simulator state
+  const [monkeyMindState, setMonkeyMindState] = useState('clinging'); // 'clinging' | 'observing' | 'emptiness'
+  const [selectedVedanaEmotion, setSelectedVedanaEmotion] = useState('สุข');
+  const [selectedElement, setSelectedElement] = useState('wind');
+
+  // Modal for adding new night notes
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [newDate, setNewDate] = useState('2026-10-09');
+  const [newTitle, setNewTitle] = useState('');
+  const [newSummary, setNewSummary] = useState('');
+  const [newTags, setNewTags] = useState('สติ, กายคตาสติ');
+  const [newSheetTitle, setNewSheetTitle] = useState('');
+  const [newSheetContent, setNewSheetContent] = useState('');
+
+  // Tibetan Bell / Sing-bowl Sound Synthesizer (528Hz pure sine tone)
+  const playZenBell = () => {
+    if (!soundEnabled) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+
+      // Main frequency 528Hz + Sub frequency harmonic 1056Hz
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(528, ctx.currentTime);
+
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(1056, ctx.currentTime);
+
+      gain.gain.setValueAtTime(0.28, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00005, ctx.currentTime + 3.4);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(ctx.currentTime + 3.5);
+      osc2.stop(ctx.currentTime + 3.5);
+    } catch (e) {
+      console.log('Zen bell muted or context blocked', e);
+    }
+  };
+
+  // Breathing Loop
+  useEffect(() => {
+    let timer = null;
+    if (breathingActive) {
+      timer = setInterval(() => {
+        setBreathSeconds((prev) => {
+          const next = (prev + 1) % 8;
+          if (next === 0) {
+            setBreathPhase('หายใจเข้า (เกิด)');
+            playZenBell();
+          } else if (next === 4) {
+            setBreathPhase('หายใจออก (ดับ)');
+          }
+          return next;
+        });
+      }, 1000);
+    } else {
+      clearInterval(timer);
+    }
+    return () => clearInterval(timer);
+  }, [breathingActive, soundEnabled]);
+
+  // Current selected night & sheet
+  const currentNight = journal[selectedNightIndex] || journal[0];
+  const currentSheet = currentNight?.sheets[activeSheetIndex] || currentNight?.sheets[0];
+
+  // Filtered timeline based on search
+  const filteredTimeline = useMemo(() => {
+    if (!searchQuery.trim()) return journal;
+    const query = searchQuery.toLowerCase();
+    return journal.filter((night) => {
+      const matchTitle = night.title.toLowerCase().includes(query);
+      const matchSummary = night.summary.toLowerCase().includes(query);
+      const matchTags = night.tags.some((t) => t.toLowerCase().includes(query));
+      const matchSheets = night.sheets.some((s) => s.title.toLowerCase().includes(query));
+      return matchTitle || matchSummary || matchTags || matchSheets;
+    });
+  }, [journal, searchQuery]);
+
+  // Switch Night Handler
+  const handleSelectNight = (indexInMainJournal) => {
+    setSelectedNightIndex(indexInMainJournal);
+    setActiveSheetIndex(0);
+    playZenBell();
+  };
+
+  // Switch Sheet Handler
+  const handleSelectSheet = (sheetIdx) => {
+    setActiveSheetIndex(sheetIdx);
+    playZenBell();
+  };
+
+  // Next / Prev Night Navigation
+  const handlePrevNight = () => {
+    if (selectedNightIndex < journal.length - 1) {
+      handleSelectNight(selectedNightIndex + 1);
+    }
+  };
+
+  const handleNextNight = () => {
+    if (selectedNightIndex > 0) {
+      handleSelectNight(selectedNightIndex - 1);
+    }
+  };
+
+  // Add Night Note Form Submission
+  const handleAddNightSubmit = (e) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+
+    const newEntry = {
+      id: `night-${Date.now()}`,
+      date: newDate,
+      displayDate: newDate,
+      title: newTitle,
+      summary: newSummary || 'บันทึกธรรมะข้อคิดประจำคืน',
+      tags: newTags.split(',').map((t) => t.trim()).filter(Boolean),
+      sheets: [
+        {
+          id: `sheet-${Date.now()}-1`,
+          sheetLabel: 'แผ่นที่ 1',
+          academicLevel: 'บันทึกภาวนา',
+          title: newSheetTitle || newTitle,
+          subtitle: 'บันทึกการเรียนรู้ธรรมะประจำวัน',
+          type: 'three_steps',
+          steps: [
+            {
+              stepNumber: 1,
+              title: 'สาระสำคัญประจำคืน',
+              desc: newSheetContent || 'สังเกตเห็นกายใจและการทำงานของจิตในปัจจุบัน',
+              motto: 'รู้ซื่อๆ ไม่แทรกแซง'
+            },
+            {
+              stepNumber: 2,
+              title: 'ข้อควรระลึกในการปฏิบัติ',
+              desc: 'รักษาฐานกายให้อยู่กับลมหายใจ และอิริยาบถย่อย 24 ชั่วโมง',
+              motto: 'ฐานกายคตาสติ'
+            },
+            {
+              stepNumber: 3,
+              title: 'ผลของการปล่อยวาง',
+              desc: 'คืนรูปธาตุสู่ธรรมชาติ จิตสงบเย็นบนความว่าง',
+              motto: 'สุญญตาธรรม'
+            }
+          ],
+          footerBanner: 'มีสติรู้ทันกายใจ ปล่อยวางทุกสิ่งตามธรรมดา'
+        }
+      ]
+    };
+
+    setJournal([newEntry, ...journal]);
+    setSelectedNightIndex(0);
+    setActiveSheetIndex(0);
+    setIsAddModalOpen(false);
+    playZenBell();
+
+    // Reset Form
+    setNewTitle('');
+    setNewSummary('');
+    setNewSheetTitle('');
+    setNewSheetContent('');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FBF7F0] text-[#4A3D36] font-sans antialiased selection:bg-[#EBD8C8] selection:text-[#3B2C24]">
+      {/* Ambient background glows */}
+      <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#FBEFE3] rounded-full blur-3xl opacity-50 -z-10 pointer-events-none" />
+      <div className="fixed bottom-0 right-10 w-96 h-96 bg-[#E8F1EC] rounded-full blur-3xl opacity-50 -z-10 pointer-events-none" />
+
+      {/* Top Application Bar */}
+      <header className="sticky top-0 z-30 bg-[#FBF7F0]/90 backdrop-blur-md border-b border-[#EADC CE]/80 border-[#E8D9CB]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#EEDAC8] border border-[#DFC3AD] flex items-center justify-center text-[#7A4B2F] shadow-xs">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#3E2C22]">
+                  สมุดบันทึกธรรมะหน้ากระดาน
+                </h1>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EBF3ED] text-[#2C693E] border border-[#CDE1D3]">
+                  รายวัน 24 ชม.
+                </span>
+              </div>
+              <p className="text-xs text-[#8A7569]">
+                Dhamma Daily Board & Journal • ลายเส้นการ์ตูนมินิมอล อบอุ่น สบายตา
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Actions Bar */}
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            {/* Zen Bell Audio Toggle */}
+            <button
+              onClick={() => {
+                setSoundEnabled(!soundEnabled);
+                if (!soundEnabled) playZenBell();
+              }}
+              className={`px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition ${
+                soundEnabled
+                  ? 'bg-[#EBF3ED] text-[#295D38] border-[#B7D8C1]'
+                  : 'bg-white/80 text-[#8F7D74] border-[#E3D6CA]'
+              }`}
+              title="เปิด/ปิด เสียงระฆังภาวนา 528Hz"
+            >
+              {soundEnabled ? <Volume2 className="w-4 h-4 text-[#2E7444]" /> : <VolumeX className="w-4 h-4" />}
+              <span className="hidden sm:inline">{soundEnabled ? 'ระฆังสติ: เปิด' : 'ปิดเสียง'}</span>
+            </button>
+
+            {/* Add Night Button */}
+            <button
+              onClick={() => setIsAddModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-xl bg-[#E38F56] hover:bg-[#D47E43] text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 transition"
+            >
+              <Plus className="w-4 h-4" />
+              <span>เพิ่มบันทึกคืนใหม่</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Dual-Column Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* =========================================================
+            LEFT COLUMN (4 COLS): DAILY TIMELINE & ARCHIVE DRAWER
+           ========================================================= */}
+        <aside className="lg:col-span-4 space-y-4">
+          
+          {/* Search Box */}
+          <div className="bg-white/90 p-3.5 rounded-2xl border border-[#E9DACB] shadow-2xs">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#9E8B81]" />
+              <input
+                type="text"
+                placeholder="ค้นหา เช่น ไอ้วอก, ป.โท, ลมหายใจ..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-1.5 bg-[#FAF6F0] rounded-xl text-xs text-[#4A3C35] placeholder-[#AA998E] border border-[#EBDDD0] focus:outline-none focus:ring-2 focus:ring-[#D9B599]"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E8B81] hover:text-[#523E34]"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Timeline Feed List */}
+          <div className="bg-white/80 rounded-3xl border border-[#E7D9CB] p-3 shadow-xs space-y-2 max-h-[560px] overflow-y-auto">
+            <div className="px-3 py-1 flex items-center justify-between text-xs font-bold text-[#826E63]">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>สารบัญบันทึกธรรม ({filteredTimeline.length} คืน)</span>
+              </span>
+              <span className="text-[10px] text-[#A69489]">ล่าสุดอยู่บนสุด</span>
+            </div>
+
+            {filteredTimeline.length === 0 ? (
+              <div className="text-center py-8 text-xs text-[#9E8B81]">
+                ไม่พบบันทึกที่ตรงกับคำค้นหา
+              </div>
+            ) : (
+              filteredTimeline.map((night) => {
+                const originalIndex = journal.findIndex((j) => j.id === night.id);
+                const isSelected = originalIndex === selectedNightIndex;
+
+                return (
+                  <div
+                    key={night.id}
+                    onClick={() => handleSelectNight(originalIndex)}
+                    className={`p-3.5 rounded-2xl cursor-pointer transition-all border text-left ${
+                      isSelected
+                        ? 'bg-[#FFF7EF] border-[#E29A64] shadow-xs ring-2 ring-[#E29A64]/20 -translate-y-0.5'
+                        : 'bg-[#FAF6F1]/80 hover:bg-[#FAF5ED] border-[#EDE2D5] text-[#69584E]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-[#F2E5D7] text-[#84502E]">
+                        {night.displayDate}
+                      </span>
+                      <span className="text-[10px] font-semibold text-[#8C7A70] bg-white px-2 py-0.5 rounded-full border border-[#E8DDD1]">
+                        {night.sheets.length} แผ่นกระดาน
+                      </span>
+                    </div>
+
+                    <h3 className="font-bold text-sm text-[#3E2C22] line-clamp-1">
+                      {night.title}
+                    </h3>
+                    <p className="text-xs text-[#7F6B60] mt-1 line-clamp-2 leading-relaxed">
+                      {night.summary}
+                    </p>
+
+                    {/* Tag Badges */}
+                    <div className="flex flex-wrap gap-1 mt-2.5">
+                      {night.tags.map((tag, tIdx) => (
+                        <span
+                          key={tIdx}
+                          className="text-[10px] px-2 py-0.5 rounded bg-white/90 text-[#7D6659] border border-[#E8DED3]"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Quick Zen Breath Widget in Sidebar */}
+          <div className="bg-gradient-to-br from-[#F2F7F4] to-[#E9F3ED] p-4 rounded-3xl border border-[#CDE3D4] text-center shadow-xs">
+            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#2E683E] mb-2">
+              <Wind className="w-4 h-4 text-[#3C8552]" />
+              <span>ระลึกดูลมหายใจปัจจุบัน</span>
+            </div>
+
+            <div className="w-20 h-20 mx-auto my-2 rounded-full border-2 border-[#A8CEB4] flex items-center justify-center relative overflow-hidden bg-white/70">
+              <div
+                className={`absolute inset-0 bg-[#A9DFC0] rounded-full transition-transform duration-1000 ${
+                  breathingActive && breathPhase.includes('เข้า')
+                    ? 'scale-100 opacity-70'
+                    : 'scale-40 opacity-30'
+                }`}
+              />
+              <span className="text-[11px] font-bold text-[#2A5C37] relative z-10 px-1 text-center">
+                {breathingActive ? breathPhase : 'มีสติรู้'}
+              </span>
+            </div>
+
+            <button
+              onClick={() => {
+                setBreathingActive(!breathingActive);
+                if (!breathingActive) playZenBell();
+              }}
+              className="mt-1 px-4 py-1.5 bg-[#4B8E61] hover:bg-[#3D7851] text-white rounded-full text-xs font-semibold shadow-2xs transition flex items-center gap-1 mx-auto"
+            >
+              {breathingActive ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              <span>{breathingActive ? 'หยุดชั่วคราว' : 'เริ่มดูลม 24 ชม.'}</span>
+            </button>
+          </div>
+        </aside>
+
+        {/* =========================================================
+            RIGHT COLUMN (8 COLS): MAIN BOARD VIEWER & INFOGRAPHIC
+           ========================================================= */}
+        <main className="lg:col-span-8 space-y-4">
+          
+          {/* Board Sheet Navigation Tabs Header */}
+          <div className="bg-white/80 p-3 rounded-2xl border border-[#E7D9CB] flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+              <span className="text-xs font-bold text-[#867064] shrink-0 pl-1">
+                แผ่นกระดานในคืนนี้:
+              </span>
+              {currentNight.sheets.map((sheet, sIdx) => {
+                const isSheetActive = sIdx === activeSheetIndex;
+                return (
+                  <button
+                    key={sheet.id}
+                    onClick={() => handleSelectSheet(sIdx)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 ${
+                      isSheetActive
+                        ? 'bg-[#E5884B] text-white shadow-2xs'
+                        : 'bg-[#FAF5EE] text-[#786154] hover:bg-[#F2EAE0] border border-[#E7DACD]'
+                    }`}
+                  >
+                    <span>{sheet.sheetLabel}</span>
+                    {sheet.academicLevel && (
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-md ${
+                        isSheetActive ? 'bg-white/20 text-white' : 'bg-white text-[#8C6853]'
+                      }`}>
+                        {sheet.academicLevel}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="text-xs font-medium text-[#998579] shrink-0 pr-1">
+              {currentNight.displayDate}
+            </div>
+          </div>
+
+          {/* ========================================================
+              CANVAS DISPLAY: WARM PAPER STYLE (4:3 RATIO FEEL)
+             ======================================================== */}
+          <div className="bg-[#FFFDF9] rounded-3xl border-2 border-[#EADCCB] shadow-sm p-5 sm:p-8 relative overflow-hidden transition-all duration-300">
+            
+            {/* Hand-drawn style decorative frame corner dots */}
+            <div className="absolute top-3 left-4 text-[11px] font-mono text-[#A8988C] select-none">
+              {currentNight.date} • {currentSheet?.sheetLabel}
+            </div>
+            <div className="absolute top-3 right-5 text-xs font-bold px-2 py-0.5 rounded-full bg-[#F3EDE5] text-[#866856] border border-[#E5DACD]">
+              {currentSheet?.academicLevel || 'ธรรมะปฏิบัติ'}
+            </div>
+
+            {/* Render dynamically based on sheet content type */}
+            {renderSheetContent(
+              currentSheet,
+              {
+                selectedElement,
+                setSelectedElement,
+                monkeyMindState,
+                setMonkeyMindState,
+                selectedVedanaEmotion,
+                setSelectedVedanaEmotion,
+                playZenBell
+              }
+            )}
+
+            {/* Hand-drawn style frame bottom signature */}
+            <div className="mt-8 pt-4 border-t border-[#F0E4D8] flex items-center justify-between text-xs text-[#9B897E]">
+              <div className="flex items-center gap-2">
+                <Feather className="w-3.5 h-3.5 text-[#CF8B5B]" />
+                <span>บันทึกด้วยความตื่นรู้ • ลายเส้นมินิมอลญี่ปุ่น-เกาหลี</span>
+              </div>
+              <span>สติปัฏฐาน 4 • พระอภิธรรม</span>
+            </div>
+
+          </div>
+
+          {/* Bottom Flip Page Controls (Next / Prev Night) */}
+          <div className="flex items-center justify-between pt-2">
+            <button
+              onClick={handlePrevNight}
+              disabled={selectedNightIndex >= journal.length - 1}
+              className={`px-4 py-2 rounded-2xl text-xs font-semibold flex items-center gap-2 transition ${
+                selectedNightIndex >= journal.length - 1
+                  ? 'bg-transparent text-[#B5A59B] cursor-not-allowed'
+                  : 'bg-white hover:bg-[#FAF4ED] text-[#5C4538] border border-[#E4D4C5] shadow-2xs'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>คืนก่อนหน้า</span>
+            </button>
+
+            <span className="text-xs text-[#8F7D73] font-medium">
+              คืนที่ {journal.length - selectedNightIndex} จากทั้งหมด {journal.length} คืน
+            </span>
+
+            <button
+              onClick={handleNextNight}
+              disabled={selectedNightIndex <= 0}
+              className={`px-4 py-2 rounded-2xl text-xs font-semibold flex items-center gap-2 transition ${
+                selectedNightIndex <= 0
+                  ? 'bg-transparent text-[#B5A59B] cursor-not-allowed'
+                  : 'bg-white hover:bg-[#FAF4ED] text-[#5C4538] border border-[#E4D4C5] shadow-2xs'
+              }`}
+            >
+              <span>คืนถัดไป</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+        </main>
+      </div>
+
+      {/* =========================================================
+          MODAL: เพิ่มบันทึกคืนใหม่ (+ Add Night Form)
+         ========================================================= */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-[#FFFDF9] w-full max-w-lg rounded-3xl border-2 border-[#E7D6C3] shadow-xl p-6 relative animate-fadeIn">
+            <button
+              onClick={() => setIsAddModalOpen(false)}
+              className="absolute right-4 top-4 text-[#8C7A70] hover:text-[#423127] p-1.5 rounded-full hover:bg-[#F5ECE2]"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-xl bg-[#F6ECE0] text-[#7A4B2F] flex items-center justify-center">
+                <BookOpen className="w-4 h-4" />
+              </div>
+              <h3 className="text-lg font-bold text-[#422F24]">
+                เพิ่มบันทึกธรรมะกระดานคืนใหม่
+              </h3>
+            </div>
+
+            <form onSubmit={handleAddNightSubmit} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-[#634E42] mb-1">วันที่ (Date)</label>
+                  <input
+                    type="date"
+                    required
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                    className="w-full p-2 bg-[#FAF5EE] rounded-xl border border-[#E4D4C4] text-[#4A392F]"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#634E42] mb-1">แท็กหมวดหมู่ (คั่นด้วยจุลภาค)</label>
+                  <input
+                    type="text"
+                    placeholder="เช่น ไอ้วอก, ลมหายใจ, กายคตาสติ"
+                    value={newTags}
+                    onChange={(e) => setNewTags(e.target.value)}
+                    className="w-full p-2 bg-[#FAF5EE] rounded-xl border border-[#E4D4C4] text-[#4A392F]"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#634E42] mb-1">หัวข้อหลักประจำคืน (Title)</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="เช่น รู้ทันจิตหลง และสติในชีวิตจริง"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  className="w-full p-2 bg-[#FAF5EE] rounded-xl border border-[#E4D4C4] text-[#4A392F]"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#634E42] mb-1">สรุปย่อ (Short Summary)</label>
+                <input
+                  type="text"
+                  placeholder="สรุป 1 ประโยคเพื่อให้ค้นหาง่าย"
+                  value={newSummary}
+                  onChange={(e) => setNewSummary(e.target.value)}
+                  className="w-full p-2 bg-[#FAF5EE] rounded-xl border border-[#E4D4C4] text-[#4A392F]"
+                />
+              </div>
+
+              <div className="pt-2 border-t border-[#F2E5D7]">
+                <label className="block font-bold text-[#634E42] mb-1">หัวข้อกระดานแผ่นแรก</label>
+                <input
+                  type="text"
+                  placeholder="เช่น การสังเกตสภาวะในปัจจุบัน"
+                  value={newSheetTitle}
+                  onChange={(e) => setNewSheetTitle(e.target.value)}
+                  className="w-full p-2 bg-[#FAF5EE] rounded-xl border border-[#E4D4C4] text-[#4A392F] mb-2"
+                />
+                <label className="block font-bold text-[#634E42] mb-1">เนื้อหา/ข้อความบันทึก</label>
+                <textarea
+                  rows={3}
+                  placeholder="บันทึกข้อคิดธรรมะจากอาจารย์หรือการภาวนา..."
+                  value={newSheetContent}
+                  onChange={(e) => setNewSheetContent(e.target.value)}
+                  className="w-full p-2 bg-[#FAF5EE] rounded-xl border border-[#E4D4C4] text-[#4A392F]"
+                />
+              </div>
+
+              <div className="pt-3 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-[#F0E6DA] text-[#695447] font-semibold hover:bg-[#E6D9CA]"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#E2894A] hover:bg-[#D57B3A] text-white font-semibold shadow-xs"
+                >
+                  บันทึกลงสมุด
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+// =================================================================
+// 3. SHEET RENDERER DISPATCHER
+// =================================================================
+function renderSheetContent(sheet, ctx) {
+  if (!sheet) return null;
+
+  switch (sheet.type) {
+    // 2026-10-08 Sheet 1: เปรียบเทียบไอ้วอก vs ไอ้ใบ้
+    case 'compare_characters':
+      return <CompareCharactersSheet sheet={sheet} ctx={ctx} />;
+
+    // 2026-10-08 Sheet 2: 3 ก้าวภาวนาในชีวิตจริง
+    case 'three_steps':
+      return <ThreeStepsSheet sheet={sheet} />;
+
+    // 2026-10-07 Sheet 1: ป.ตรี ทำบทศึกษา กรรมของตน
+    case 'board_bachelor':
+      return <BachelorSheet sheet={sheet} ctx={ctx} />;
+
+    // 2026-10-07 Sheet 2: ป.โท ฝึกสติ 24 ชม. ไตรลักษณ์
+    case 'board_master':
+      return <MasterSheet sheet={sheet} ctx={ctx} />;
+
+    // 2026-10-07 Sheet 3: ป.เอก พระธรรมเป็นเครื่องกำจัดทุกข์
+    case 'board_doctorate':
+      return <DoctorateSheet sheet={sheet} ctx={ctx} />;
+
+    default:
+      return <ThreeStepsSheet sheet={sheet} />;
+  }
+}
+
+// =================================================================
+// 4. SUB-COMPONENTS FOR EACH BOARD SHEET
+// =================================================================
+
+// 4.1 SHEET: Compare 'ไอ้วอก' vs 'ไอ้ใบ้' (From 2026-10-08 Page 4-5)
+function CompareCharactersSheet({ sheet, ctx }) {
+  const {
+    monkeyMindState,
+    setMonkeyMindState,
+    selectedVedanaEmotion,
+    setSelectedVedanaEmotion,
+    playZenBell
+  } = ctx;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="text-center pt-2 pb-4 border-b border-[#F0E4D8]">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#3F2B20]">
+          {sheet.title}
+        </h2>
+        <p className="text-xs text-[#8A7163] mt-1">{sheet.subtitle}</p>
+      </div>
+
+      {/* Two Characters Comparison Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+        
+        {/* Left Column: ไอ้วอก (จิตหลง) */}
+        <div className="bg-[#FAF3EB] p-5 rounded-3xl border-2 border-[#EDD9C5] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-lg text-[#543324]">{sheet.leftCharacter.name}</h3>
+              <span className="text-[10px] bg-[#F2DCBE] text-[#86512C] font-bold px-2 py-0.5 rounded-full">
+                {sheet.leftCharacter.tag}
+              </span>
+            </div>
+
+            {/* Cartoon Monkey Line-Art Illustration */}
+            <div className="bg-white/80 p-4 rounded-2xl border border-[#E8D4C2] text-center my-3">
+              <svg viewBox="0 0 140 120" className="w-32 h-28 mx-auto stroke-[#4B372B] fill-none stroke-[2.2] stroke-linecap-round stroke-linejoin-round">
+                {/* Monkey Ears */}
+                <circle cx="36" cy="45" r="14" className="fill-[#F5DFC8]" />
+                <circle cx="36" cy="45" r="8" className="fill-[#EDC3A4]" />
+                <circle cx="104" cy="45" r="14" className="fill-[#F5DFC8]" />
+                <circle cx="104" cy="45" r="8" className="fill-[#EDC3A4]" />
+                {/* Monkey Head */}
+                <ellipse cx="70" cy="52" rx="34" ry="30" className="fill-[#F5DFC8]" />
+                <ellipse cx="70" cy="56" rx="26" ry="20" className="fill-[#FCEDE0]" />
+                {/* Big mischievous eyes */}
+                <ellipse cx="60" cy="52" rx="4" ry="6" className="fill-[#4B372B]" />
+                <ellipse cx="80" cy="52" rx="4" ry="6" className="fill-[#4B372B]" />
+                <circle cx="61" cy="50" r="1.5" className="fill-white stroke-none" />
+                <circle cx="81" cy="50" r="1.5" className="fill-white stroke-none" />
+                {/* Cute snout & open laughing mouth */}
+                <path d="M66 60 Q70 63 74 60" />
+                <path d="M65 65 Q70 72 75 65 Z" className="fill-[#C45E5E]" />
+                {/* Monkey Cheeky Arms */}
+                <path d="M38 75 Q20 65 15 50" />
+                <path d="M102 75 Q120 65 125 50" />
+                {/* Dancing Feet */}
+                <path d="M55 105 L50 114" />
+                <path d="M85 105 L92 114" />
+              </svg>
+
+              {/* Monkey Speech Bubble */}
+              <div className="mt-2 bg-[#FEEFEA] border border-[#F6C8B8] p-2 rounded-xl text-xs font-bold text-[#B04323]">
+                {sheet.leftCharacter.quote}
+              </div>
+            </div>
+
+            <p className="text-xs text-[#7B6153] leading-relaxed mb-3">
+              {sheet.leftCharacter.desc}
+            </p>
+
+            {/* Vedana 3 Interactive Buttons */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-bold text-[#8C5D3D] block">
+                เวทนา 3 ทางอารมณ์ (สนามเล่นของไอ้วอก):
+              </span>
+              {sheet.leftCharacter.vedanaList.map((vedana, vIdx) => {
+                const isSelected = selectedVedanaEmotion === vedana.emotion;
+                return (
+                  <button
+                    key={vIdx}
+                    onClick={() => {
+                      setSelectedVedanaEmotion(vedana.emotion);
+                      playZenBell();
+                    }}
+                    className={`w-full py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-between transition ${
+                      isSelected
+                        ? 'bg-white border-[#E08F53] text-[#9E4D1B] shadow-2xs font-bold'
+                        : 'bg-white/60 border-[#ECDDCF] text-[#786457] hover:bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {vedana.emotion === 'สุข' && <Smile className="w-4 h-4 text-[#E08F53]" />}
+                      {vedana.emotion === 'ทุกข์' && <Frown className="w-4 h-4 text-[#D35757]" />}
+                      {vedana.emotion === 'เฉย' && <Meh className="w-4 h-4 text-[#5D8EA9]" />}
+                      <span>{vedana.name}</span>
+                    </div>
+                    <span className="text-[11px] text-[#A68F80]">{vedana.desc}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-[#E8D4C2] text-[11px] text-[#9A6D51] text-center font-medium">
+            ยิ่งหลงตามเวทนา = ยิ่งให้อาหารไอ้วอกเติบโต
+          </div>
+        </div>
+
+        {/* Right Column: ไอ้ใบ้ (จิตรู้ตื่น) */}
+        <div className="bg-[#F2F7F4] p-5 rounded-3xl border-2 border-[#CFE4D6] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-lg text-[#255437]">{sheet.rightCharacter.name}</h3>
+              <span className="text-[10px] bg-[#D6EFE0] text-[#1D6335] font-bold px-2 py-0.5 rounded-full">
+                {sheet.rightCharacter.tag}
+              </span>
+            </div>
+
+            {/* Cartoon Pure Mind 'ไอ้ใบ้' with Subtle Aura Glow */}
+            <div className="bg-white/80 p-4 rounded-2xl border border-[#CCE2D3] text-center my-3 relative">
+              <div className="w-28 h-28 mx-auto rounded-full bg-[#E5F5EC] border-2 border-[#A8D8B9] flex flex-col items-center justify-center relative shadow-xs">
+                {/* Glowing Aura Ring */}
+                <div className="absolute inset-0 rounded-full border border-[#86C99D] animate-ping opacity-25" />
+                
+                {/* Smiling calm face with closed zen eyes */}
+                <div className="flex gap-4 mb-1">
+                  <span className="text-xl font-bold text-[#275939]">⌒</span>
+                  <span className="text-xl font-bold text-[#275939]">⌒</span>
+                </div>
+                <div className="w-4 h-1.5 rounded-full bg-[#467E59] mt-0.5" />
+                <span className="text-[10px] font-bold text-[#29683F] mt-2">จิตรู้ตื่น</span>
+              </div>
+
+              <div className="mt-2 bg-[#E9F4EE] border border-[#C6E4D1] p-2 rounded-xl text-xs font-semibold text-[#255C37]">
+                คุณสมบัติ: {sheet.rightCharacter.qualities}
+              </div>
+            </div>
+
+            {/* Interactive Simulation: เมื่อไอ้ใบ้ปรากฏ */}
+            <div className="mt-3 bg-white/90 p-3.5 rounded-2xl border border-[#CCE2D3]">
+              <span className="text-xs font-bold text-[#2B613D] block mb-2">
+                ผลลัพธ์เมื่อ "ไอ้ใบ้" ปรากฏรู้ทัน:
+              </span>
+              <ul className="space-y-2 text-xs text-[#4A6954]">
+                {sheet.rightCharacter.results.map((res, rIdx) => (
+                  <li key={rIdx} className="flex items-start gap-2">
+                    <span className="text-[#388F57] font-bold">✓</span>
+                    <span>{res}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* State Interactive Toggle */}
+              <div className="mt-4 pt-3 border-t border-[#E0EFE5] text-center">
+                <span className="text-[11px] font-bold text-[#3B6C4B] block mb-2">
+                  จำลองสภาวะไอ้วอกเมื่อถูกรู้ทัน:
+                </span>
+                <div className="grid grid-cols-3 gap-1.5">
+                  <button
+                    onClick={() => setMonkeyMindState('clinging')}
+                    className={`p-1.5 rounded-xl text-xs font-medium transition ${
+                      monkeyMindState === 'clinging'
+                        ? 'bg-[#E07945] text-white shadow-2xs'
+                        : 'bg-[#F5EDE3] text-[#715747]'
+                    }`}
+                  >
+                    หลงยึดมั่น
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMonkeyMindState('observing');
+                      playZenBell();
+                    }}
+                    className={`p-1.5 rounded-xl text-xs font-medium transition ${
+                      monkeyMindState === 'observing'
+                        ? 'bg-[#4B8E63] text-white shadow-2xs'
+                        : 'bg-[#EAF4ED] text-[#2F613E]'
+                    }`}
+                  >
+                    รู้ทัน
+                  </button>
+                  <button
+                    onClick={() => {
+                      setMonkeyMindState('emptiness');
+                      playZenBell();
+                    }}
+                    className={`p-1.5 rounded-xl text-xs font-medium transition ${
+                      monkeyMindState === 'emptiness'
+                        ? 'bg-[#3C302B] text-white shadow-2xs'
+                        : 'bg-[#F2ECE5] text-[#5A453A]'
+                    }`}
+                  >
+                    คืนสู่ความว่าง
+                  </button>
+                </div>
+
+                <div className="mt-2 text-[11px] text-[#557B61] italic">
+                  {monkeyMindState === 'clinging' && '🐒 ไอ้วอกยังกระโดดร้อง "กูแก่ กูตาย"'}
+                  {monkeyMindState === 'observing' && '👀 ไอ้ใบ้นิ่งรู้... ไอ้วอกกระโดดไม่ออก ตัวตนเริ่มเจือจาง'}
+                  {monkeyMindState === 'emptiness' && '⚪ ไอ้วอกสลายตัว คืนสู่รสจืดสนิทของพระธรรม'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-[#CFE4D6] text-[11px] text-[#2C6E42] text-center font-medium">
+            พระธรรมไม่ได้ให้ไปฆ่าไอ้วอก เพียงแค่ "รู้ทัน" มันจะดับไปเอง
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+// 4.2 SHEET: 3 Steps Daily Practice (From 2026-10-08 Page 2)
+function ThreeStepsSheet({ sheet }) {
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="text-center pt-2 pb-4 border-b border-[#F0E4D8]">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#3F2B20]">
+          {sheet.title}
+        </h2>
+        <p className="text-xs text-[#8A7163] mt-1">{sheet.subtitle}</p>
+      </div>
+
+      {/* 3 Step Flow Journey */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {sheet.steps?.map((step) => (
+          <div
+            key={step.stepNumber}
+            className="bg-[#FAF5EE] p-5 rounded-3xl border-2 border-[#EBD9C7] flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-7 h-7 rounded-full bg-[#E08848] text-white font-bold text-xs flex items-center justify-center shadow-2xs">
+                  {step.stepNumber}
+                </span>
+                <h3 className="font-bold text-[#4B3428] text-sm sm:text-base leading-snug">
+                  {step.title}
+                </h3>
+              </div>
+
+              {/* Minimal Line Art Icons per Step */}
+              <div className="bg-white/80 p-3.5 rounded-2xl border border-[#EADBCC] my-3 text-center">
+                {step.stepNumber === 1 && (
+                  <div className="py-2">
+                    <Home className="w-10 h-10 mx-auto text-[#D57E42] mb-1" />
+                    <span className="text-[11px] font-bold text-[#7A5B49]">บ้านชั่วคราว</span>
+                  </div>
+                )}
+                {step.stepNumber === 2 && (
+                  <div className="py-2">
+                    <Clock className="w-10 h-10 mx-auto text-[#489462] mb-1" />
+                    <span className="text-[11px] font-bold text-[#326D45]">ฐานกาย 24 ชม.</span>
+                  </div>
+                )}
+                {step.stepNumber === 3 && (
+                  <div className="py-2">
+                    <Eye className="w-10 h-10 mx-auto text-[#4A7CA6] mb-1" />
+                    <span className="text-[11px] font-bold text-[#305F84]">รู้ทัน ไม่ทำสงคราม</span>
+                  </div>
+                )}
+              </div>
+
+              <p className="text-xs text-[#6F5B4E] leading-relaxed">
+                {step.desc}
+              </p>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[#E8D9CB] text-[11px] font-semibold text-[#A86438] bg-white/60 p-2 rounded-xl text-center">
+              ✓ {step.motto}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer Banner */}
+      {sheet.footerBanner && (
+        <div className="bg-[#463730] text-[#F9F5EF] p-4 rounded-2xl text-center font-medium text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs">
+          <Feather className="w-4 h-4 text-[#E8AF78]" />
+          <span>"{sheet.footerBanner}"</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// 4.3 SHEET: Bachelor (ป.ตรี) - ทำบทศึกษา : กรรมของตน
+function BachelorSheet({ sheet, ctx }) {
+  const { selectedElement, setSelectedElement, playZenBell } = ctx;
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center pt-2 pb-4 border-b border-[#F0E4D8]">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#3F2B20]">
+          {sheet.title}
+        </h2>
+        <p className="text-xs text-[#8A7163] mt-1">{sheet.subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* กาย คือใคร */}
+        <div className="bg-[#FAF4ED] p-5 rounded-3xl border border-[#EDDEC9] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-[#4B3428] text-base">กาย คือใคร...?</h3>
+              <span className="text-[10px] bg-[#EEDBCA] text-[#784F33] px-2 py-0.5 rounded">ธาตุไม่รู้</span>
+            </div>
+            <div className="text-[11px] text-[#806B5F] flex justify-between px-1 mb-3">
+              <span>อดีต: <b>กรรมเก่า</b></span>
+              <span className="text-[#C17C50] font-bold">+</span>
+              <span>ปัจจุบัน: <b>พระอภิธรรม</b></span>
+            </div>
+
+            {/* Element Interactive Selector */}
+            <div className="bg-white/90 p-3 rounded-2xl border border-[#ECDDCF] my-3 text-center">
+              <div className="grid grid-cols-4 gap-1 mb-2">
+                {[
+                  { id: 'earth', label: 'ดิน', icon: Mountain, color: 'bg-[#987554]' },
+                  { id: 'water', label: 'น้ำ', icon: Droplets, color: 'bg-[#5B8EA6]' },
+                  { id: 'wind', label: 'ลม', icon: Wind, color: 'bg-[#579E78]' },
+                  { id: 'fire', label: 'ไฟ', icon: Flame, color: 'bg-[#D96B43]' }
+                ].map((elem) => {
+                  const Icon = elem.icon;
+                  const active = selectedElement === elem.id;
+                  return (
+                    <button
+                      key={elem.id}
+                      onClick={() => {
+                        setSelectedElement(elem.id);
+                        playZenBell();
+                      }}
+                      className={`p-1.5 rounded-xl text-center text-xs transition ${
+                        active ? `${elem.color} text-white font-bold` : 'bg-[#F2ECE3] text-[#695447]'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5 mx-auto mb-0.5" />
+                      <span className="text-[10px]">{elem.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="text-[11px] text-[#785E4D] font-medium py-1">
+                {selectedElement === 'wind' && 'ลมหายใจ = ธาตุเดินทางที่หมุนเวียนต่อเนื่อง'}
+                {selectedElement === 'earth' && 'ธาตุดิน = ผม ขน เล็บ ฟัน หนัง กระดูก เป็นก้อนธาตุ'}
+                {selectedElement === 'water' && 'ธาตุน้ำ = เลือด เหงื่อ น้ำเหลือง ไหลซึมตามกฎ'}
+                {selectedElement === 'fire' && 'ธาตุไฟ = อุณหภูมิ เผาผลาญ ย่อยสลายตามจริง'}
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/80 p-2.5 rounded-xl border border-[#EDD9C7] text-center text-xs">
+            <b>กายไม่มีฉลาด ไม่มีโง่</b>
+            <p className="text-[11px] text-[#82695C] mt-0.5">เป็นก้อนธาตุที่เดินทางตามธรรมชาติ</p>
+          </div>
+        </div>
+
+        {/* กาย = ธาตุสุญญตา */}
+        <div className="bg-[#F5F8F6] p-5 rounded-3xl border border-[#DCE8DF] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-[#2A4B38] text-base">กาย = ธาตุสุญญตา</h3>
+              <span className="text-[10px] bg-[#D8EADA] text-[#225732] px-2 py-0.5 rounded">ความว่าง</span>
+            </div>
+            <p className="text-[11px] text-[#557662] text-center mb-3">
+              เกิดบนความว่าง • เดินทาง • ปลายทางคืนสู่ความว่าง
+            </p>
+
+            <div className="bg-white/90 p-4 rounded-2xl border border-[#D2E2D5] text-center my-3 min-h-[140px] flex items-center justify-center">
+              <div className="relative">
+                {/* Minimal Zen Sunyata Circle */}
+                <div className="w-20 h-20 rounded-full border-2 border-dashed border-[#5B8569] flex items-center justify-center text-xs font-bold text-[#2A4B38]">
+                  ความว่าง
+                </div>
+                <div className="text-[10px] text-[#4C7558] mt-2">
+                  ธาตุสุญญตา ไม่เคยตาย เป็นอมตะธัมม์
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/80 p-2.5 rounded-xl border border-[#CDE1D2] text-center text-xs text-[#2A4B38] font-bold">
+            สลายความยึดมั่นถือมั่น คืนสู่ธรรมชาติ
+          </div>
+        </div>
+
+        {/* รูปธัม เป็นมายา */}
+        <div className="bg-[#FAF2F2] p-5 rounded-3xl border border-[#ECDADA] flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-[#553333] text-base">รูปธัม เป็นมายา</h3>
+              <span className="text-[10px] bg-[#F2DDDD] text-[#8C3F3F] px-2 py-0.5 rounded">มายา</span>
+            </div>
+            <p className="text-[11px] text-[#8C5E5E] text-center mb-3">
+              มีอยู่โดยเหตุ (กรรม) และผล (เดินทาง)
+            </p>
+
+            <div className="bg-white/90 p-4 rounded-2xl border border-[#E9D5D5] text-center my-3 min-h-[140px] flex items-center justify-around">
+              <div className="text-center">
+                <span className="text-xs font-bold text-[#5C453C] block">ธรรม</span>
+                <span className="text-[10px] text-[#86685B]">ผู้คุ้มจิต</span>
+              </div>
+              <span className="text-base text-[#AA7777]">⟷</span>
+              <div className="text-center">
+                <span className="text-xs font-bold text-[#4E3E37] block">กรรม</span>
+                <span className="text-[10px] text-[#86685B]">ผู้จัดสรร</span>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white/80 p-2.5 rounded-xl border border-[#E7D0D0] text-center text-xs text-[#573535] font-bold">
+            เป็นกระบวนการของเหตุปัจจัย ไม่ใช่ตัวตน
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 4.4 SHEET: Master (ป.โท) - ฝึกสติ ที่ระลึกถูกมาก.. 24 ชม.
+function MasterSheet({ sheet, ctx }) {
+  return (
+    <div className="space-y-6">
+      <div className="text-center pt-2 pb-4 border-b border-[#F0E4D8]">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#3F2B20]">
+          {sheet.title}
+        </h2>
+        <p className="text-xs text-[#8A7163] mt-1">{sheet.subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left Column (5 Cols) */}
+        <div className="lg:col-span-5 space-y-3 text-xs">
+          <div className="bg-[#FAF4ED] p-3.5 rounded-2xl border border-[#EDDEC9]">
+            <h4 className="font-bold text-[#4B3428] mb-1">• เห็นร่างกายคือความว่าง</h4>
+            <p className="text-[#7B6355]">เกิด-แก่-เจ็บ-ตาย ตลอดเวลา ร่างกายไม่ใช่ก้อนตันอันถาวร</p>
+          </div>
+          <div className="bg-[#F0F7F2] p-3.5 rounded-2xl border border-[#D5EADB]">
+            <h4 className="font-bold text-[#2C623C] mb-1">• เห็นลมหายใจ เข้า(-ออก)</h4>
+            <p className="text-[#52775E]">เกิดและดับในทุกลมหายใจ เป็นสัญลักษณ์ของชีวิตที่ไม่เที่ยง</p>
+          </div>
+          <div className="bg-[#F4EFF7] p-3.5 rounded-2xl border border-[#E3D6E8]">
+            <h4 className="font-bold text-[#553265] mb-1">• เห็น ผม, ขน, เล็บ... ในปัจจุบัน</h4>
+            <p className="text-[#6E4F7D]">แม้ใน 1 นาที เส้นผมและเซลล์ก็แปรปรวนตลอดเวลา ไม่มีชื่อว่าเป็นอะไร</p>
+          </div>
+        </div>
+
+        {/* Right Column (7 Cols): ปัจจุบันเวลา 1 นาที / 2 นาที */}
+        <div className="lg:col-span-7 bg-[#FAF7F2] p-5 rounded-3xl border-2 border-[#EADCCC] flex flex-col justify-between">
+          <div>
+            <div className="text-center pb-2 border-b border-[#EADCCE]">
+              <span className="text-xs font-bold text-[#865939] bg-[#F2E5D5] px-3 py-0.5 rounded-full">
+                ปัจจุบันเวลา
+              </span>
+              <h4 className="font-bold text-[#443026] text-sm mt-1.5">
+                ร่างกายจึงเป็น อมตะธาตุ ตลอดเวลา
+              </h4>
+            </div>
+
+            {/* Timeline diagram */}
+            <div className="my-5 bg-white p-4 rounded-2xl border border-[#ECE0D3]">
+              <div className="flex items-center justify-between text-xs font-bold text-[#7E6A5E] mb-2 px-2">
+                <span>อดีต = สุญญตา</span>
+                <span className="text-[#B97042]">ปัจจุบัน (1-2 นาที)</span>
+                <span>อนาคต = ไม่มี</span>
+              </div>
+
+              <div className="relative py-3 flex items-center justify-between">
+                <div className="absolute left-6 right-6 top-1/2 h-0.5 border-t-2 border-dashed border-[#D2BFB0] -z-0" />
+                
+                <div className="z-10 bg-[#FBEFE3] border-2 border-[#D97D47] text-[#D97D47] font-bold text-xs w-10 h-10 rounded-full flex items-center justify-center">
+                  เกิด
+                </div>
+                <div className="z-10 bg-[#FAF2EB] border border-[#E7C7AE] text-[#8C512C] text-xs font-semibold px-3 py-1 rounded-lg">
+                  ตั้งอยู่
+                </div>
+                <div className="z-10 bg-[#F7EBEB] border-2 border-[#C25858] text-[#C25858] font-bold text-xs w-10 h-10 rounded-full flex items-center justify-center">
+                  ดับ
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-3 bg-white border border-[#E8D7C7] rounded-2xl flex items-center gap-3">
+            <span className="text-2xl">🐒</span>
+            <div className="text-xs">
+              <span className="font-bold text-[#C45E28] block">วอกมาแล้วว!</span>
+              <span className="text-[#523E34]">
+                ร่างกาย = ธาตุไม่รู้ ➔ แล้วความลืมตัว-เห็นแก่ตัว อยู่ที่ใคร?
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 4.5 SHEET: Doctorate (ป.เอก) - พระธรรมเป็นเครื่องกำจัดทุกข์ (จับไอ้วอก)
+function DoctorateSheet({ sheet, ctx }) {
+  const {
+    monkeyMindState,
+    setMonkeyMindState,
+    selectedVedanaEmotion,
+    setSelectedVedanaEmotion,
+    playZenBell
+  } = ctx;
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center pt-2 pb-4 border-b border-[#F0E4D8]">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#38261C]">
+          {sheet.title}
+        </h2>
+        <p className="text-xs text-[#867064] mt-1">{sheet.subtitle}</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        {/* Left Section: ฐานความจริง & เห็นไอ้วอกเป็นอนิจจัง */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="bg-[#FAF5EE] p-4 rounded-3xl border-2 border-[#E9DEC9]">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="font-bold text-[#453127] text-sm">
+                1. ฐานของความจริง : รู้สึกตัวทั่วพร้อม (24 ชม.)
+              </h4>
+              <span className="text-[10px] bg-[#E8F2EB] text-[#2F6D44] font-bold px-2 py-0.5 rounded">
+                ศึกษาไอ้วอก
+              </span>
+            </div>
+
+            <div className="bg-white/80 p-3 rounded-2xl border border-[#E7D9C7] text-center">
+              <span className="text-xs font-bold text-[#754E33] block border-b border-[#EADCCE] pb-1 mb-1">
+                กายคตาสติ (ฐานที่มั่นรองรับ 24 ชม.)
+              </span>
+              <div className="flex flex-wrap justify-center gap-1.5 pt-1 text-[11px] font-semibold text-[#553E32]">
+                <span className="bg-[#F2ECE3] px-2 py-0.5 rounded">ศรัทธา</span>
+                <span className="bg-[#F2ECE3] px-2 py-0.5 rounded">เพียร</span>
+                <span className="bg-[#F2ECE3] px-2 py-0.5 rounded">สติ</span>
+                <span className="bg-[#F2ECE3] px-2 py-0.5 rounded">สมาธิ</span>
+                <span className="bg-[#F2ECE3] px-2 py-0.5 rounded">ปัญญา</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#FAF5F2] p-4 rounded-3xl border-2 border-[#EADBD0]">
+            <h4 className="font-bold text-[#453127] text-sm mb-2">
+              2. เห็นไอ้วอก = อนิจจัง (เกิด-ตั้งอยู่-ดับ)
+            </h4>
+            <div className="bg-white p-3 rounded-2xl border border-[#E9D5C8] text-center text-xs">
+              <div className="font-bold text-[#B05B28] mb-1">
+                บริวารไอ้วอก : จำ (สัญญา) • คิด (สังขาร) • รู้สึก (เวทนา)
+              </div>
+              <p className="text-[11px] text-[#7A5844]">
+                สุข, ทุกข์, เฉย เป็นเพียงบริวารที่ถูกยึดครอง ไม่ใช่ของจริง
+              </p>
+              <div className="mt-2 text-[11px] font-bold text-[#B54A23] bg-[#FAF2EB] py-1 rounded-lg">
+                ไอ้วอกหมดตัวตน : มี - ไม่มี ~ ไอ้วอกตาย
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Section: พระธรรมให้ไอ้วอก ผลิตความว่าง */}
+        <div className="lg:col-span-5 bg-gradient-to-b from-[#F9F7F3] to-[#F3EFE9] p-5 rounded-3xl border-2 border-[#E7D9C9] flex flex-col justify-between text-center">
+          <div>
+            <div className="bg-white p-4 rounded-2xl border border-[#E3D4C4] shadow-2xs mb-4">
+              <h4 className="font-bold text-[#3E2B21] text-sm mb-1">
+                พระธรรมให้ไอ้วอก ผลิตความว่าง
+              </h4>
+              <p className="text-xs text-[#7B665A]">
+                ยิ่งเจอไอ้วอกเยอะ ตัวตนจะจืดลง กลายเป็นรสชาติของพระธรรม
+              </p>
+            </div>
+
+            {/* Enso / Zen Circle representation */}
+            <div className="py-4">
+              <svg viewBox="0 0 100 100" className="w-24 h-24 mx-auto stroke-[#483A32] fill-none stroke-[5] stroke-linecap-round">
+                <path d="M 85 45 C 80 15, 20 15, 18 50 C 16 80, 75 90, 80 65" />
+              </svg>
+              <span className="text-xs font-bold text-[#42322A] block mt-2">
+                คืนสู่ความว่าง (สุญญตา)
+              </span>
+            </div>
+          </div>
+
+          <div className="p-3 bg-[#FAF2EB] rounded-2xl border border-[#E7D6C4] text-xs">
+            <span className="font-bold text-[#8A5F43] block">อิทัปปัจจยตา</span>
+            <span className="text-[#543F34] italic font-serif">
+              "สิ่งนี้มี สิ่งนี้ย่อมมี • สิ่งนี้ไม่มี สิ่งนี้ย่อมไม่มี"
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
