@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สมุดบันทึกธรรมะหน้ากระดาน - คลังบทเรียนประจำคืน</title>
+  <!-- Google Fonts: Sarabun & Mali -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;600;700;800&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mali: ['Mali', 'cursive', 'sans-serif'],
+            sarabun: ['Sarabun', 'sans-serif'],
+          },
+          colors: {
+            cream: '#FAF6F0',
+            warmBeige: '#F3ECE1',
+            peachSoft: '#FFD7C2',
+            peachDark: '#D85C3A',
+            dustyBlue: '#6A879E',
+            sageGreen: '#859A72',
+            woodBrown: '#3A2D2C',
+            lightBrown: '#6B5A51',
+            pastelYellow: '#FFF1BF'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #EFE7DC;
+      color: #3A2D2C;
+      font-family: 'Sarabun', sans-serif;
+    }
+    .comic-title {
+      font-family: 'Mali', cursive;
+    }
+    .paper-texture {
+      background-image: radial-gradient(#E8DFC8 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .clean-line {
+      stroke: #3A2D2C;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .clean-line-thin {
+      stroke: #554440;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .card-hover {
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 8px 8px 0px 0px #3A2D2C;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 paper-texture flex flex-col items-center">
+
+  <!-- Main Container -->
+  <div class="w-full max-w-5xl flex flex-col gap-6">
+
+    <!-- Header Banner -->
+    <header class="bg-cream rounded-[2rem] border-[4px] border-woodBrown p-6 sm:p-8 shadow-[8px_8px_0px_0px_#3A2D2C] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="space-y-2 text-center md:text-left z-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-peachSoft border-2 border-woodBrown text-xs sm:text-sm font-extrabold comic-title">
+          <span>📖 สารบัญบันทึกธรรม</span>
+          <span class="w-2 h-2 rounded-full bg-peachDark"></span>
+          <span>ธรรมะหน้ากระดาน</span>
+        </div>
+        <h1 class="comic-title text-2xl sm:text-4xl font-extrabold text-woodBrown tracking-tight">
+          สมุดภาพธรรมะฉบับพกใจ
+        </h1>
+        <p class="text-sm sm:text-base text-lightBrown font-semibold max-w-lg">
+          รวมสรุปภาพ Infographic ลายเส้นมินิมอล บทเรียนภาวนาประจำคืน ถอดรหัสขันธ์ 5 รู้วิถีจิต และการเจริญสติในชีวิตประจำวัน
+        </p>
+      </div>
+
+      <!-- Mascot Zen Monk Illustration -->
+      <div class="shrink-0 flex items-center justify-center bg-warmBeige p-4 rounded-3xl border-[3px] border-woodBrown shadow-[4px_4px_0px_0px_#3A2D2C]">
+        <svg width="84" height="84" viewBox="0 0 50 50">
+          <circle cx="25" cy="18" r="11" fill="#FFDFC7" class="clean-line" />
+          <path d="M19 14 Q23 10 27 12" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round" />
+          <path d="M20 18 Q22 20 23 18" fill="none" class="clean-line-thin" />
+          <path d="M27 18 Q29 20 30 18" fill="none" class="clean-line-thin" />
+          <path d="M23 23 Q25 25 27 23" fill="none" class="clean-line-thin" />
+          <path d="M14 44 C15 32 20 28 25 28 C30 28 35 32 36 44 Z" fill="#E8985E" class="clean-line" />
+          <path d="M20 28 L34 44" fill="none" class="clean-line-thin" stroke="#3A2D2C" />
+          <circle cx="18" cy="21" r="2.5" fill="#FFAAA6" opacity="0.8" />
+          <circle cx="32" cy="21" r="2.5" fill="#FFAAA6" opacity="0.8" />
+        </svg>
+      </div>
+    </header>
+
+    <!-- Filter & Search Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+      <!-- Search Box -->
+      <div class="relative w-full sm:w-80">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="ค้นหา เช่น ไอ้วอก, สมถะ, ลมหายใจ..." 
+          class="w-full px-4 py-2.5 pl-10 rounded-full border-[3px] border-woodBrown bg-white text-woodBrown font-bold text-sm focus:outline-none shadow-[3px_3px_0px_0px_#3A2D2C]"
+          oninput="filterDiaries()"
+        >
+        <span class="absolute left-3.5 top-3 text-lightBrown">🔍</span>
+      </div>
+
+      <!-- Quick Tag Buttons -->
+      <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto comic-title">
+        <button onclick="setFilter('all')" id="tag-all" class="px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-peachDark text-white font-bold text-xs sm:text-sm shadow-sm transition">
+          ทั้งหมด
+        </button>
+        <button onclick="setFilter('สมถะ')" id="tag-สมถะ" class="px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition">
+          สมถะ-วิปัสสนา
+        </button>
+        <button onclick="setFilter('ไอ้วอก')" id="tag-ไอ้วอก" class="px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition">
+          ไอ้วอก & ไอ้ใบ้
+        </button>
+        <button onclick="setFilter('ไตรลักษณ์')" id="tag-ไตรลักษณ์" class="px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition">
+          ไตรลักษณ์
+        </button>
+      </div>
+    </div>
+
+    <!-- Diary Cards Grid -->
+    <div id="cardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Cards will be populated by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16 bg-cream rounded-3xl border-[3px] border-dashed border-lightBrown/50 p-8">
+      <p class="comic-title text-xl font-bold text-woodBrown mb-2">🍃 ไม่พบบันทึกที่ตรงกับคำค้นหา</p>
+      <p class="text-sm text-lightBrown font-medium">ลองค้นหาด้วยคำอื่น หรือคลิกปุ่ม "ทั้งหมด" ด้านบนดูนะครับ</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 border-t-2 border-dashed border-lightBrown/40 mt-4 comic-title text-sm font-bold text-lightBrown">
+      "มีสติรู้ฐานกาย รู้ทันไอ้วอก ปล่อยให้ทุกสิ่งดับไปตามธรรมดา" • ธรรมะหน้ากระดานฉบับพกใจ
+    </footer>
+
+  </div>
+
+  <!-- JavaScript to Render and Filter Cards -->
+  <script>
+    // ⭐️ ฐานข้อมูลบันทึกธรรมะแต่ละคืน (เมื่อมีวันใหม่ ให้เพิ่มข้อมูลลงตรงนี้ได้เลย)
+    const diariesData = [
+      {
+        id: "2026-10-11",
+        dateDisplay: "11 ต.ค. 2569",
+        title: "ชีวิตมงคล : รู้สึกตัว ไม่มีตัว ตื่นยันหลับ",
+        subtitle: "คำสอนพระอาจารย์คอยเตือนข้างหู 6 สเต็ปตลอดวัน",
+        fileUrl: "2026-10-11.html", // ชี้ไปยังไฟล์เดิมของคุณ
+        badge: "6 สเต็ปประจำวัน",
+        badgeColor: "bg-peachDark text-white",
+        tags: ["สมถะ", "วิปัสสนา", "รู้สึกตัว", "ไม่มีตัว"],
+        summary: "ลืมตาปุ๊บ รู้สึกตัวทั่วกาย มองทะลุหนังห่อหุ้ม ดักจับเสียงบ่นในหัว กายทุกข์แต่ใจไม่ทุกข์ คืนทุกอย่างสู่ความว่าง",
+        iconSvg: `<svg width="40" height="40" viewBox="0 0 50 50"><circle cx="25" cy="25" r="18" fill="#FFF1BF" stroke="#3A2D2C" stroke-width="2.5"/><circle cx="21" cy="21" r="2.5" fill="#F4E0A5"/><circle cx="31" cy="27" r="3" fill="#F4E0A5"/><path d="M15 30 Q25 24 35 30" fill="none" stroke="#3A2D2C" stroke-width="2" stroke-linecap="round"/></svg>`
+      },
+      {
+        id: "2026-10-08",
+        dateDisplay: "08 ต.ค. 2569",
+        title: "รู้ทัน \"ไอ้วอก\" & เข้าถึง \"ไอ้ใบ้\"",
+        subtitle: "การแยกแยะเวทนา 3 ทางอารมณ์ และรสชาติของพระธรรม",
+        fileUrl: "2026-10-08.html", // เตรียมไว้สำหรับไฟล์วันที่ 8
+        badge: "2 แผ่นกระดาน",
+        badgeColor: "bg-sageGreen text-white",
+        tags: ["ไอ้วอก", "ไอ้ใบ้", "เวทนา", "ไตรลักษณ์"],
+        summary: "รู้จักไอ้วอกผู้ชอบหลอกว่าเป็นเจ้าของบ้าน อาศัยเกาะกินขันธ์ 5 เมื่อไอ้ใบ้ปรากฏ ตัวตนจะเจือจางลงสู่ความว่าง",
+        iconSvg: `<svg width="40" height="40" viewBox="0 0 50 50"><ellipse cx="25" cy="28" rx="14" ry="12" fill="#FFCDB2" stroke="#3A2D2C" stroke-width="2.5"/><circle cx="20" cy="25" r="2" fill="#3A2D2C"/><circle cx="30" cy="25" r="2" fill="#3A2D2C"/><circle cx="10" cy="25" r="4" fill="#FFCDB2" stroke="#3A2D2C" stroke-width="2"/><circle cx="40" cy="25" r="4" fill="#FFCDB2" stroke="#3A2D2C" stroke-width="2"/><path d="M21 31 Q25 35 29 31" fill="none" stroke="#3A2D2C" stroke-width="2"/></svg>`
+      },
+      {
+        id: "2026-10-07",
+        dateDisplay: "07 ต.ค. 2569",
+        title: "ทำบทศึกษา : กรรมของตน (3 บอร์ด)",
+        subtitle: "ป.ตรี กายคือใคร? / ป.โท สติ 24 ชม. / ป.เอก จับไอ้วอก",
+        fileUrl: "2026-10-07.html", // เตรียมไว้สำหรับไฟล์วันที่ 7
+        badge: "ป.ตรี • ป.โท • ป.เอก",
+        badgeColor: "bg-dustyBlue text-white",
+        tags: ["ไตรลักษณ์", "กรรม", "ธาตุ", "สติ 24 ชม."],
+        summary: "กายคือก้อนธาตุเดินทาง ร่างกายเป็นอมตะธาตุเกิดดับตลอดเวลา ปลูกฐานกายให้มั่นคงด้วยพระธรรมคุ้มจิต",
+        iconSvg: `<svg width="40" height="40" viewBox="0 0 50 50"><circle cx="25" cy="18" r="8" fill="#FFDFC7" stroke="#3A2D2C" stroke-width="2"/><path d="M17 38 C18 28 32 28 33 38 Z" fill="#FAF6F0" stroke="#3A2D2C" stroke-width="2"/><circle cx="25" cy="28" r="14" fill="none" stroke="#859A72" stroke-width="2" stroke-dasharray="3,3"/></svg>`
+      }
+    ];
+
+    let currentTag = 'all';
+
+    function renderCards(list) {
+      const grid = document.getElementById('cardsGrid');
+      const emptyState = document.getElementById('emptyState');
+      grid.innerHTML = '';
+
+      if (list.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      list.forEach(item => {
+        const card = document.createElement('a');
+        card.href = item.fileUrl;
+        card.className = "card-hover bg-cream rounded-[1.8rem] border-[3.5px] border-woodBrown p-5 flex flex-col justify-between shadow-[4px_4px_0px_0px_#3A2D2C] relative text-left group";
+        
+        card.innerHTML = `
+          <div>
+            <!-- Top meta row -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="comic-title font-bold text-xs px-2.5 py-0.5 rounded-full border-2 border-woodBrown ${item.badgeColor}">
+                ${item.badge}
+              </span>
+              <span class="text-xs font-bold text-lightBrown">${item.dateDisplay}</span>
+            </div>
+
+            <!-- Title & Icon -->
+            <div class="flex items-start gap-3 my-2">
+              <div class="p-2 rounded-2xl bg-warmBeige border-2 border-woodBrown shrink-0 group-hover:scale-105 transition">
+                ${item.iconSvg}
+              </div>
+              <div>
+                <h2 class="comic-title text-base sm:text-lg font-extrabold text-woodBrown leading-snug group-hover:text-peachDark transition">
+                  ${item.title}
+                </h2>
+                <p class="text-xs font-medium text-lightBrown line-clamp-1 mt-0.5">
+                  ${item.subtitle}
+                </p>
+              </div>
+            </div>
+
+            <!-- Summary text -->
+            <p class="text-xs sm:text-sm text-woodBrown/90 font-medium leading-relaxed my-3 line-clamp-3 bg-white/70 p-3 rounded-xl border border-lightBrown/20">
+              ${item.summary}
+            </p>
+          </div>
+
+          <!-- Bottom Action & Tags -->
+          <div class="pt-3 border-t-2 border-dashed border-lightBrown/30 flex items-center justify-between gap-2 mt-2">
+            <div class="flex flex-wrap gap-1">
+              ${item.tags.map(t => `<span class="text-[10px] bg-warmBeige px-2 py-0.5 rounded-md border border-lightBrown/30 font-semibold text-lightBrown">#${t}</span>`).join('')}
+            </div>
+            <span class="comic-title text-xs sm:text-sm font-extrabold text-peachDark flex items-center gap-1 shrink-0 group-hover:translate-x-1 transition">
+              เปิดอ่าน ➔
+            </span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function filterDiaries() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const filtered = diariesData.filter(d => {
+        const matchesTag = (currentTag === 'all') || d.tags.some(t => t.includes(currentTag)) || d.title.includes(currentTag);
+        const matchesSearch = !query || 
+          d.title.toLowerCase().includes(query) || 
+          d.subtitle.toLowerCase().includes(query) || 
+          d.summary.toLowerCase().includes(query) || 
+          d.dateDisplay.toLowerCase().includes(query) ||
+          d.tags.some(t => t.toLowerCase().includes(query));
+        return matchesTag && matchesSearch;
+      });
+      renderCards(filtered);
+    }
+
+    function setFilter(tag) {
+      currentTag = tag;
+      const buttons = ['all', 'สมถะ', 'ไอ้วอก', 'ไตรลักษณ์'];
+      buttons.forEach(b => {
+        const btn = document.getElementById('tag-' + b);
+        if (b === tag) {
+          btn.className = "px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-peachDark text-white font-bold text-xs sm:text-sm shadow-sm transition";
+        } else {
+          btn.className = "px-3.5 py-1.5 rounded-full border-2 border-woodBrown bg-white text-woodBrown font-bold text-xs sm:text-sm hover:bg-warmBeige transition";
+        }
+      });
+      filterDiaries();
+    }
+
+    // Initial Render
+    renderCards(diariesData);
+  </script>
+</body>
+</html>
